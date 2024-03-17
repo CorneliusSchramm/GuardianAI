@@ -13,3 +13,8 @@ npm install
 ```sh
 npm start
 ```
+
+I also reccomend installing the folowing VS add ons
+[Inline fold](https://marketplace.visualstudio.com/items?itemName=moalamri.inline-fold)
+[Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+[prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
