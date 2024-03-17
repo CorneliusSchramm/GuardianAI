@@ -2,8 +2,14 @@
 
 Use [Expo Router](https://docs.expo.dev/router/introduction/) with [Nativewind](https://www.nativewind.dev/v4/overview/) styling.
 
-## 🚀 How to use
+## 🚀 How to get started
 
+1) Clone Repo
+2) Run
 ```sh
-npx create-expo-app -e with-router-tailwind
+npm install
+```
+3) start server
+```sh
+npm start
 ```
