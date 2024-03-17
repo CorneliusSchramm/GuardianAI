@@ -4,12 +4,14 @@ Use [Expo Router](https://docs.expo.dev/router/introduction/) with [Nativewind](
 
 ## 🚀 How to get started
 
-1) Clone Repo
-2) Run
+1. Clone Repo
+
+2.  Run
 ```sh
 npm install
 ```
-3) start server
+
+3. Start server
 ```sh
 npm start
 ```
