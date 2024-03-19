@@ -24,7 +24,7 @@ export default function App() {
   }, [sound]);
 
   return (
-    <View className="flex-1 bg-slate-100 dark:bg-slate-900">
+    <View className="flex-1 bg-slate-100 dark:bg-slate-800">
       <Text className="text-3xl text-center native:text-5xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl p-7 text-green-600 dark:text-orange-300" >Record Audio Here 🎤</Text>
       <Button title="Play Sound" onPress={playSound} />
     </View>
