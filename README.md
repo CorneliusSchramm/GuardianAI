@@ -6,7 +6,7 @@ Use [Expo Router](https://docs.expo.dev/router/introduction/) with [Nativewind](
 
 1. Clone Repo
 
-2.  Run
+2.  Install dependencies
 ```sh
 npm install
 ```

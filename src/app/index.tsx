@@ -21,7 +21,7 @@ function Content() {
   return (
     <View className="flex-1">
       <View className="md:py-24 lg:py-32 xl:py-48">
-        <View className="px-4 md:px-6">
+        <View className="px-4 md:px-3">
           <View className="flex flex-col items-center gap-2 text-center">
             <Text
               role="heading"
