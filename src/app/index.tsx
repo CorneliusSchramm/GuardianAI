@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from 'expo-image';
 import { Asset } from 'expo-asset';
 
-const image = Asset.fromModule(require('@public/landing-image.webp')).uri;
+const image = Asset.fromModule(require('@assets/landing-image.webp')).uri;
 
 export default function Page() {
   return (

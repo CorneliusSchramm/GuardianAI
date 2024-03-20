@@ -4,7 +4,7 @@
     "jsx": "react",
     "paths": {
       "@/*": ["./src/*"],
-      "@public/*": ["./public/*"],
+      "@assets/*": ["./assets/*"],
     }
   },
   "extends": "expo/tsconfig.base",
