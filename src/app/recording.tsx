@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, Button, StyleSheet , TouchableOpacity} from "react-native";
 import { Audio } from "expo-av";
 
 export default function App() {
@@ -107,22 +107,72 @@ export default function App() {
   }
 
   return (
-    <View className="flex-1 bg-slate-50 dark:bg-black">
-      <Text className="native:text-3xl text-center font-bold pt-3 text-gray-700 dark:text-orange-300">
-        {" "}
+    <View className="flex-1 max-w-xl mx-auto dark:bg-black">
+      <Text className="lg:text-10xl md:text-5xl text-4xl text-center font-bold p-8 text-gray-700 dark:text-orange-300">
         Audio Playground 🎤
       </Text>
-      <Button title="Play Music" onPress={playSound} />
-      <Button
+      <TouchableOpacity
+       className="p-2 rounded-md items-center justify-center mb-2 bg-orange-400"
+       onPress={playSound}
+        >
+        <Text style={{ color: 'white', fontSize: 16 }}>
+          Play Music 
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={{
+          backgroundColor: recording ? 'red' : 'green',
+          padding: 10,
+          borderRadius: 5,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 10,
+        }}
+        onPress={recording ? stopRecording : startRecording}
+      >
+        <Text style={{ color: 'white', fontSize: 16 }}>
+          {recording ? "Stop Recording" : "Start Recording"}
+        </Text>
+      </TouchableOpacity>
+
+      {/* <Button title="Play Music 🎼" onPress={playSound} /> */}
+      {/* <Button
         title={recording ? "Stop Recording" : "Start Recording"}
         onPress={recording ? stopRecording : startRecording}
-      />
-      <Button
+      /> */}
+       <TouchableOpacity
+       className={`p-2 rounded-md items-center justify-center mb-2 ${recordedSound === undefined ? 'bg-gray-400' : 'bg-slate-700'}`}
+       onPress={playRecordedSound}
+       disabled={recordedSound === undefined}
+        >
+        <Text style={{ color: 'white', fontSize: 16 }}>
+          Play Recorded Sound
+        </Text>
+      </TouchableOpacity>
+
+      {/* <Button
         title="Play Recorded Sound"
-        onPress={playRecordedSound}
-        disabled={recordedSound === undefined}
+       
       />
-      <Button
+       */}
+      <TouchableOpacity
+        className={`p-2 rounded-md items-center justify-center mb-2 ${recordedSound === undefined ? 'bg-gray-400' : 'bg-fuchsia-400'}`}
+        onPress={analyzeRecordedSound}
+        disabled={recordedSound === undefined}
+        >
+        <Text style={{ color: 'white', fontSize: 16 }}>
+        Analyze Recorded Sound
+        </Text>
+
+      </TouchableOpacity>
+      {soundAnalysis["reasoning"] && (
+        <View className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 mb-4">
+          <Text className="text-xl font-bold mb-2">Shadyness: {soundAnalysis["score"]}%</Text>
+          <Text className="text-lg">Reasoning: {soundAnalysis["reasoning"]}</Text>
+        </View>
+      )}
+
+      {/* <Button
         title="Analyze Recorded Sound"
         onPress={analyzeRecordedSound}
         disabled={recordedSound === undefined}
@@ -132,7 +182,7 @@ export default function App() {
       )}
       {soundAnalysis["reasoning"] && (
         <Text>Reasoning: {soundAnalysis["reasoning"]}</Text>
-      )}
+      )} */}
     </View>
   );
 }
