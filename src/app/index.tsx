@@ -9,7 +9,7 @@ const image = Asset.fromModule(require('@assets/landing-image.webp')).uri;
 
 export default function Page() {
   return (
-    <View className="flex flex-1 bg-white dark:bg-black">
+    <View className="flex bg-white dark:bg-black">
       <Header />
       <Content />
       <Footer />
@@ -19,22 +19,22 @@ export default function Page() {
 
 function Content() {
   return (
-    <View className="flex-1">
-      <View className="md:py-24 lg:py-32 xl:py-48">
+    <View className="">
+      <View className="md:py-3 lg:py-8 xl:py-12">
         <View className="px-4 md:px-3">
           <View className="flex flex-col items-center gap-2 text-center">
             <Text
               role="heading"
-              className="text-3xl text-center native:text-5xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl p-5 text-black dark:text-white"
+              className="text-3xl text-center native:text-5xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-black dark:text-white"
             >
               Welcome to Guardian AI
             </Text>
             <Image
             className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
               source={{ uri: image }}
-              style={{ width: 400, height: 300 }}
+              style={{ width: 300, height: 200 }}
             />
-            <Text className="mx-auto max-w-[700px] text-lg text-gray-500 md:text-xl dark:text-gray-400 top-6 mt-3 text-justify" >
+            <Text className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400 top-6 m-3 text-justify" >
               Protecting the Elderly from Spam Calls using AI-powered call monitoring and protection.
               Real-time analysis. Automatic call blocking. Personalized settings.
 
@@ -45,7 +45,7 @@ function Content() {
             <View className="gap-4">
               <Link
                 suppressHighlighting
-                className="flex h-9 items-center justify-center overflow-hidden rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 web:shadow ios:shadow transition-colors hover:bg-gray-900/90 active:bg-gray-400/90 web:focus-visible:outline-none web:focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+                className="flex h-9 items-center justify-center overflow-hidden rounded-md bg-gray-900 px-4 py-4 text-sm font-medium text-gray-50 web:shadow ios:shadow transition-colors hover:bg-gray-900/90 active:bg-gray-400/90 web:focus-visible:outline-none web:focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
                 href="/recording"
               >
                 Go to App
