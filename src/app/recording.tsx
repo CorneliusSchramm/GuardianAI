@@ -84,7 +84,7 @@ export default function App() {
   }
 
   async function analyzeRecordedSound() {
-    const apiUrl = "http://localhost:8081/completion";
+    const apiUrl = "/completion";
     let formData = new FormData();
 
     let blob = await fetch(recordingURI).then((r) => r.blob());
