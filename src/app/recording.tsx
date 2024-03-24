@@ -42,14 +42,15 @@ export default function App() {
 
   async function startRecording() {
     try {
-      if (permissionResponse.status !== "granted") {
-        console.log("Requesting permission..");
-        await requestPermission();
+      // Explicitly request permission if not already granted
+      if (permissionResponse.status !== 'granted') {
+        console.log('Requesting permission..');
+        const newPermissionResponse = await requestPermission();
+        if (newPermissionResponse.status !== 'granted') {
+          console.log('Microphone access was not granted.');
+          return; // Exit if permissions are not granted
+        }
       }
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
 
       console.log("Starting recording..");
       const { recording: recordedAudio } = await Audio.Recording.createAsync(
