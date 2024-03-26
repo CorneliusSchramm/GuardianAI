@@ -42,24 +42,22 @@ export default function App() {
 
   async function startRecording() {
     try {
-      // Explicitly request permission if not already granted
       if (permissionResponse.status !== 'granted') {
         console.log('Requesting permission..');
-        const newPermissionResponse = await requestPermission();
-        if (newPermissionResponse.status !== 'granted') {
-          console.log('Microphone access was not granted.');
-          return; // Exit if permissions are not granted
-        }
+        await requestPermission();
       }
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
 
-      console.log("Starting recording..");
-      const { recording: recordedAudio } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      console.log('Starting recording..');
+      const { recording: recordedAudio } = await Audio.Recording.createAsync( Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
       setRecording(recordedAudio);
-      console.log("Recording started");
+      console.log('Recording started');
     } catch (err) {
-      console.error("Failed to start recording", err);
+      console.error('Failed to start recording', err);
     }
   }
 
@@ -86,26 +84,37 @@ export default function App() {
 
   async function analyzeRecordedSound() {
     const apiUrl = "/api/completion";
-    let formData = new FormData();
-
-    let blob = await fetch(recordingURI).then((r) => r.blob());
-
-    formData.append("audio_data", blob, "file");
-
-    await fetch(apiUrl, {
-      method: "POST",
-      // cache: "no-cache",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setSoundAnalysis(json);
-        return json;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+    const blob = await fetch(recordingURI).then(r => r.blob());
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = async function() {
+        const base64data = reader.result;
+        
+        const parts = recordingURI.split(".");
+        const fileType = parts[parts.length - 1];
+        
+        const payload = JSON.stringify({
+            audio_data: base64data,
+            file_type: fileType || "webm",
+        });
+        
+        await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: payload,
+        })
+        .then(response => response.json())
+        .then(json => {
+            setSoundAnalysis(json);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    };
+}
 
   return (
     <View className="flex-1 max-w-xl mx-auto dark:bg-black">
@@ -121,9 +130,9 @@ export default function App() {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity 
+        className="p-2"
         style={{
           backgroundColor: recording ? 'red' : 'green',
-          padding: 10,
           borderRadius: 5,
           alignItems: 'center',
           justifyContent: 'center',
@@ -170,6 +179,7 @@ export default function App() {
         <View className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 mb-4">
           <Text className="text-xl font-bold mb-2">Shadyness: {soundAnalysis["score"]}%</Text>
           <Text className="text-lg">Reasoning: {soundAnalysis["reasoning"]}</Text>
+          <Text className="text-lg italic pt-5">Transcription: {soundAnalysis["transcription"]}</Text>
         </View>
       )}
 

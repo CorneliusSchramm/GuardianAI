@@ -20,7 +20,7 @@ export default function Page() {
 function Content() {
   return (
     <View className="">
-      <View className="md:py-3 lg:py-8 xl:py-12">
+      <View className="">
         <View className="px-4 md:px-3">
           <View className="flex flex-col items-center gap-2 text-center">
             <Text
