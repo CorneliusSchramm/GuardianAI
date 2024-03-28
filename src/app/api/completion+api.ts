@@ -1,5 +1,4 @@
 import OpenAI from "openai";
-import fs from "fs";
 
 const OPEN_API_KEY = process.env.OPEN_API_KEY;
 const openai = new OpenAI({ apiKey: OPEN_API_KEY });

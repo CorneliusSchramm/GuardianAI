@@ -4,6 +4,7 @@ import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from 'expo-image';
 import { Asset } from 'expo-asset';
+import { Platform } from 'react-native';
 
 const image = Asset.fromModule(require('@assets/landing-image.webp')).uri;
 
@@ -58,11 +59,11 @@ function Content() {
                   justifyContent: 'center', 
                   height: 35, 
                   width: 100, 
-                  borderRadius: 20, 
+                  borderRadius: Platform.OS === 'web' ? 2 : 30, 
                   backgroundColor: '#10B981', 
-                  color: 'white', 
+                  color: Platform.OS === 'web' ? "blue" : "white", 
                   fontSize: 16, 
-                  fontWeight: 'normal', 
+                  fontWeight: 'normal',
                 }}
                 >
                   Call
