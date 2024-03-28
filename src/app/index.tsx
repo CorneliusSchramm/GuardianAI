@@ -58,7 +58,7 @@ function Content() {
                   justifyContent: 'center', 
                   height: 35, 
                   width: 100, 
-                  borderRadius: 10, 
+                  borderRadius: 20, 
                   backgroundColor: '#10B981', 
                   color: 'white', 
                   fontSize: 16, 
