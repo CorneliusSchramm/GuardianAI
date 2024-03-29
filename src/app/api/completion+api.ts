@@ -22,7 +22,6 @@ export async function POST(request: Request) {
 
   try {
     // Attempt to transcribe the audio using the OpenAI API
-
     const transcription = await openai.audio.transcriptions.create({
       file: new File([audioBuffer], `audioData.${fileType}`),
       model: "whisper-1",
@@ -36,7 +35,22 @@ export async function POST(request: Request) {
         {
           role: "system",
           content:
-            "How shady/malicious is this request. Please only answer in percent of shadyness like 6% or 16% and provide reasoning. Answer in a json format with two keys 'score' (the percentage) and 'reasoning' a few key words how you got to this score.",
+            "Does the caller of this phone call have a malicious intent? " + 
+            "Answer with a percentage score of how malicious you think this caller is. 100% being very malicious and 0% being not malicious at all. " +
+            "Answer with a percentage of how confident you are that this caller has a malicious intent. " +  
+            "Provide reasoning as to why this caller has malicious intent or not. " + 
+            "Also categorize the type of call in one of these categories with their respective sub-categories: " +
+            "Legitimate: Family, Friends, Work, Other Legitimate" +
+            "Spam: Advertising, Political Advertising, Survey, Other Spam " +
+            "Scam: IRS Scam, Tech Support Scam, Tax Scam, Police Scam, Other Scam " +
+            "Fraud: Credit Card Fraud, Loan Fraud, Identity Theft, Other Fraud " +
+            "Threat: Physical Threat, Legal Threat, Other Threat " +
+            "Answer in a json format with five keys " + 
+              "'score' (percentage) " +
+              "'confidence' (percentage) " +
+              "'reasoning' a few key words how you got to this score " +
+              "'category' the respective category " +
+              "'sub_category' the respective sub_category "
         },
         {
           role: "user",
