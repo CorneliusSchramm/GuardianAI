@@ -3,7 +3,17 @@ import { View, Text, Button, StyleSheet , TouchableOpacity} from "react-native";
 
 export default function Page() {
     const [count, setCount] = useState(0);
-    const [call, setCall] = useState("");
+    type Call = {
+        uri: string;
+        id: string;
+        status: {
+            callStatus: string;
+            callerStatus: string;
+            calleeStatus: string;
+        };
+    };
+
+    const [call, setCall] = useState<Call | null>(null);
 
     async function triggerCall() {
         const apiUrl = "/api/call";
@@ -43,7 +53,16 @@ export default function Page() {
           Trigger call
         </Text>
       </TouchableOpacity>
-      <Text>Call Details: {call}</Text>
+      <Text>Call Details: {call?.status?.callStatus}</Text>
+      {/* <Text>Call Details: {call?.status?.callStatus}</Text> */}
+      <TouchableOpacity 
+            className='bg-blue-500 rounded-md w-1/2 m-4'
+            onPress={() => triggerCall()}
+        >
+        <Text className="text-center text-xl font-semibold text-white">
+          Find live call
+        </Text>
+      </TouchableOpacity>
       </View>
     );
   }
