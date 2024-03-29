@@ -32,6 +32,18 @@ export default function Page() {
             console.error(error);
         });
     }
+    async function findCall() {
+        const sessionId = "s-a1d145704da1cz18e8c37c426z1551440000" //call.id
+        const apiUrl = `/api/telephony/${sessionId}`;
+            
+        const r = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        console.log("Call Details: ", r);
+    }
 
     return (
       <View className= "border justify-center items-center">
@@ -57,10 +69,10 @@ export default function Page() {
       {/* <Text>Call Details: {call?.status?.callStatus}</Text> */}
       <TouchableOpacity 
             className='bg-blue-500 rounded-md w-1/2 m-4'
-            onPress={() => triggerCall()}
+            onPress={() => findCall()}
         >
         <Text className="text-center text-xl font-semibold text-white">
-          Find live call
+          Call details
         </Text>
       </TouchableOpacity>
       </View>

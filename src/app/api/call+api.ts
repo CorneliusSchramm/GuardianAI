@@ -36,19 +36,12 @@ async function call_ringout() {
 }
 
 export async function GET(request: Request) {
-  // return Response.json({ hello: "world" });
   await platform.login({
     jwt: process.env.RC_JWT,
   });
-
-  // platform.on(platform.events.loginSuccess, () => {
-  //   call_ringout();
-  // });
-
   const res = await call_ringout();
   console.log("res: ", res);
-  const callStatus = res.status.callStatus;
-  return new Response(JSON.stringify({ message: callStatus }), {
+  return new Response(JSON.stringify(res), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
