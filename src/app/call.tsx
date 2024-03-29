@@ -26,14 +26,18 @@ export default function Page() {
         })
         .then(response => response.json())
         .then(json => {
-            setCall(json.message);
+            setCall(json);
         })
         .catch(error => {
             console.error(error);
         });
     }
     async function findCall() {
-        const sessionId = "s-a1d145704da1cz18e8c37c426z1551440000" //call.id
+        console.log("Call: ", call);
+        if (!call || !call.id) {
+            return;
+        }
+        const sessionId = call.id;
         const apiUrl = `/api/telephony/${sessionId}`;
             
         const r = await fetch(apiUrl, {
