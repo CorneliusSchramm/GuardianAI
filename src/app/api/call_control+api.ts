@@ -134,7 +134,7 @@ function playWarningSound(call_control_id) {
     myHeaders.append("Authorization", "Bearer " + TELNYX_BEARER);
 
     var raw = JSON.stringify({
-        "audio_url": "https://zwbrsmk-anonymous-8081.exp.direct/assets/scam_warning.mp3",
+        "audio_url": "https://zwbrsmk-anonymous-8081.exp.direct/assets/ElevenLabs_2024-04-14T17_41_45_Michael_pre_s50_sb75_m1.mp3",
         "target_legs": "both"
     });
 
