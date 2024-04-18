@@ -1,9 +1,15 @@
 import OpenAI from "openai";
+import { createClient } from '@supabase/supabase-js'
 
 const OPEN_API_KEY = process.env.OPEN_API_KEY;
 const openai = new OpenAI({ apiKey: OPEN_API_KEY });
 
 const TELNYX_BEARER = process.env.TELNYX_BEARER;
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 export async function POST(request: Request) {
     // Log request headers for debugging
@@ -31,7 +37,16 @@ export async function POST(request: Request) {
     }
 
     // analyze the transcription by calling the OpenAI API
-    return analyzeTranscription(requestData);
+    // return analyzeTranscription(requestData);
+    await storeTranscription(requestData);
+
+    // aggregate the transcription and send it to OpenAI
+    aggregateTranscription(requestData);
+
+    return new Response(null, {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+    });
 };
 
 function startTranscription(call_control_id) {
@@ -58,9 +73,60 @@ function startTranscription(call_control_id) {
         .catch(error => console.log('error', error));
 };
 
-async function analyzeTranscription(requestData) {
-    let transcription_text = requestData.data.payload.transcription_data.transcript;
+async function storeTranscription(requestData) {
+    // append the transcription to a file
+    const transcription_text = requestData.data.payload.transcription_data.transcript;
+    const call_control_id = requestData.data.payload.call_control_id;
 
+    console.log(transcription_text);
+
+    // store in supabase
+    return await supabase
+        .from('transcriptions')
+        .insert({transcription: transcription_text, call_control_id: call_control_id})
+}
+
+async function aggregateTranscription(requestData) {
+    const call_control_id = requestData.data.payload.call_control_id;
+
+    const { data, error } = await supabase
+        .from('transcriptions')
+        .select(`id, transcription, analyzed`)
+        .eq('call_control_id', call_control_id)
+        .eq('analyzed', false)
+        .order('created_at', {ascending: true})
+
+    if (error) {
+        console.error(error);
+        return
+    }
+
+    console.log(data);
+    let transcription_text = data.map(d => d.transcription).join(" ");
+
+    console.log(transcription_text);
+
+    // if transcription_text contains end of a sentence, then analyze the transcription
+    // or if the transcription is longer than 200 characters
+    if (transcription_text.length > 200 || transcription_text.includes("credit card")) { // transcription_text.includes(".") || transcription_text.includes("?") || 
+        console.log("Analyzing the transcription");
+        
+        analyzeTranscription(transcription_text, call_control_id);
+
+        const update = data.map(d => ({ id: d.id, analyzed: true }));
+
+        // update the transcription in the database, mark as analyzed
+        await supabase
+            .from('transcriptions')
+            // upsert data ids, set analyzed to true, use data.id as an identifier
+            .upsert(update)
+    }
+
+
+}
+
+
+async function analyzeTranscription(transcription_text, call_control_id) {
     const assistant_id = "asst_6j3mCmqHeBm1GQP0T8llXTMm";
     const thread_id = "thread_jkjV6Q6kQPouKz2f4x0SQ0kV";
 
@@ -111,7 +177,7 @@ async function analyzeTranscription(requestData) {
 
         if (result.score > 80) {
             console.log("Scam detected!");
-            playWarningSound(requestData.data.payload.call_control_id);
+            playWarningSound(call_control_id);
         }
 
         return new Response(result, {
@@ -134,7 +200,7 @@ function playWarningSound(call_control_id) {
     myHeaders.append("Authorization", "Bearer " + TELNYX_BEARER);
 
     var raw = JSON.stringify({
-        "audio_url": "https://zwbrsmk-anonymous-8081.exp.direct/assets/ElevenLabs_2024-04-14T17_41_45_Michael_pre_s50_sb75_m1.mp3",
+        "audio_url": "https://zwbrsmk-anonymous-8081.exp.direct/assets/warning_sound_bite.mp3",
         "target_legs": "both"
     });
 
