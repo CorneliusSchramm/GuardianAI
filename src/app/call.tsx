@@ -32,6 +32,7 @@ export default function Page() {
             console.error(error);
         });
     }
+    // todo: pro not needed: remove
     async function findCall() {
         console.log("Call: ", call);
         if (!call || !call.id) {
@@ -48,6 +49,22 @@ export default function Page() {
         })
         console.log("Call Details: ", r);
     }
+    async function superviseCall() {
+      console.log("Call: ", call);
+      // if (!call || !call.id) {
+      //     return;
+      // }
+      const sessionId = "s-a1d14790f7f11z18e97008627z16fc2c0000"//call.id;
+      const apiUrl = `/api/telephony/${sessionId}/supervise`;
+          
+      const r = await fetch(apiUrl, {
+          method: "GET",
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      })
+     
+  }
 
     return (
       <View className= "border justify-center items-center">
@@ -77,6 +94,14 @@ export default function Page() {
         >
         <Text className="text-center text-xl font-semibold text-white">
           Call details
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+            className='bg-blue-500 rounded-md w-1/2 m-4'
+            onPress={() => superviseCall()}
+        >
+        <Text className="text-center text-xl font-semibold text-white">
+          Supervise
         </Text>
       </TouchableOpacity>
       </View>
