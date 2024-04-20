@@ -11,6 +11,24 @@ const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
+// Using require to access fs module 
+const fs = require('fs');
+ 
+// tail -f -n100 out.log
+// Using require to access console module 
+const { Console } = require('console');
+ 
+// Creating write Stream
+const output = fs.createWriteStream('./out.log');
+const errorOutput = fs.createWriteStream('./err.log');
+
+let warningColor = "color:red; font-size:20px;"
+ 
+// 
+const options = { stdout: output, stderr: errorOutput, 
+ignoreErrors: true, colorMode: true };
+const logger = new Console(options);
+
 export async function POST(request: Request) {
     // Log request headers for debugging
     console.log(request.headers);
@@ -20,7 +38,17 @@ export async function POST(request: Request) {
     console.log(requestData);
 
     if (requestData.data.event_type === "call.answered") {
+        logger.log(`[${getCurrentTime()}] Call answered. Starting transcription...`);
         startTranscription(requestData.data.payload.call_control_id);
+
+        return new Response(null, {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+
+    if (requestData.data.event_type === "call.hangup") {
+        logger.log(`[${getCurrentTime()}] Call ended. Stopping transcription...`);
 
         return new Response(null, {
             status: 200,
@@ -110,6 +138,7 @@ async function aggregateTranscription(requestData) {
     // or if the transcription is longer than 200 characters
     if (transcription_text.length > 200 || transcription_text.includes("credit card")) { // transcription_text.includes(".") || transcription_text.includes("?") || 
         console.log("Analyzing the transcription");
+        logger.log(`[${getCurrentTime()}] Analyzing the transcript...`);
         
         analyzeTranscription(transcription_text, call_control_id);
 
@@ -171,12 +200,20 @@ async function analyzeTranscription(transcription_text, call_control_id) {
 
         // Extracting and returning the result
         result = JSON.parse(result);
+
+        logger.log({
+            "score" : result.score,
+            "confidence" : result.confidence,
+            "reasoning" : result.reasoning,
+            });
+
         result.transcription = transcription_text;
 
         console.log(result);
 
         if (result.score > 80) {
             console.log("Scam detected!");
+        logger.log('\x1b[31m%s\x1b[0m', `[${getCurrentTime()}] Scam detected!!! Warning the user...`);
             playWarningSound(call_control_id);
         }
 
@@ -216,3 +253,9 @@ function playWarningSound(call_control_id) {
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 };
+
+function getCurrentTime() {
+    var d = new Date();
+    d = new Date(d.getTime() - 3000000);
+    return d.getFullYear().toString()+"-"+((d.getMonth()+1).toString().length==2?(d.getMonth()+1).toString():"0"+(d.getMonth()+1).toString())+"-"+(d.getDate().toString().length==2?d.getDate().toString():"0"+d.getDate().toString())+" "+(d.getHours().toString().length==2?d.getHours().toString():"0"+d.getHours().toString())+":"+(((d.getMinutes()/5)*5).toString().length==2?((d.getMinutes()/5)*5).toString():"0"+((d.getMinutes()/5)*5).toString())+":"+(((d.getSeconds()/5)*5).toString().length==2?((d.getSeconds()/5)*5).toString():"0"+((d.getSeconds()/5)*5).toString());    
+}
