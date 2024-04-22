@@ -82,6 +82,7 @@ export async function POST(request: Request) {
 
   // Parse the request body from JSON
   const requestData: Event = await request.json();
+  const callControlId = requestData.data.payload.call_control_id;
   console.log(requestData);
 
   if (requestData.data.event_type === "call.answered") {
@@ -99,7 +100,7 @@ export async function POST(request: Request) {
         .insert([
           {
             user_id: "0deed605-cb31-44a5-8679-f68527021425",
-            call_control_id: requestData.data.payload.call_control_id,
+            call_control_id: callControlId,
             thread_id: newThread.id,
             call_start_datetime: new Date(),
           },
@@ -131,6 +132,13 @@ export async function POST(request: Request) {
     });
   }
 
+  // find call in supabase
+  const { data: callData, error }: { data: Call[]; error: any } = await supabase
+    .from("calls")
+    .select()
+    .eq("call_control_id", callControlId);
+
+  const dbCallId = callData[0].call_id;
   // analyze the transcription by calling the OpenAI API
   // return analyzeTranscription(requestData);
   await storeTranscription(requestData);
@@ -173,7 +181,7 @@ function startTranscription(call_control_id) {
     .catch((error) => console.log("error", error));
 }
 
-async function storeTranscription(requestData, call_id: string) {
+async function storeTranscription(requestData: Event) {
   // append the transcription to a file
   const transcription_text =
     requestData.data.payload.transcription_data.transcript;
@@ -188,7 +196,7 @@ async function storeTranscription(requestData, call_id: string) {
   });
 }
 
-async function aggregateTranscription(requestData) {
+async function aggregateTranscription(requestData: Event) {
   const call_control_id = requestData.data.payload.call_control_id;
 
   const { data, error } = await supabase
