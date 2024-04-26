@@ -50,7 +50,7 @@ export async function POST(request: Request) {
   console.log(request.headers);
 
   // Parse the request body from JSON
-  const requestData: Event = await request.json();
+  const requestData = await request.json();
   const callControlId = requestData.data.payload.call_control_id;
   console.log(requestData);
 

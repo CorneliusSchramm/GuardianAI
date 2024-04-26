@@ -1,3 +1,19 @@
+export type TelnyxEvent = {
+  data: TelnyxEventData;
+  meta: {
+    attempt: number;
+    delivered_to: string;
+  };
+};
+
+export type TelnyxEventData = {
+  event_type: string;
+  id: string;
+  occurred_at: string;
+  payload: TelnyxEventPayload;
+  record_type: string;
+};
+
 export type TelnyxEventPayload = {
   call_control_id: string;
   call_leg_id: string;
@@ -11,20 +27,4 @@ export type TelnyxEventPayload = {
   playback_id?: string; // Optional
   status?: string; // Optional
   status_detail?: string; // Optional
-};
-
-export type TelnyxEventData = {
-  event_type: string;
-  id: string;
-  occurred_at: string;
-  payload: TelnyxEventPayload;
-  record_type: string;
-};
-
-export type TelnyxEvent = {
-  data: TelnyxEventData;
-  meta: {
-    attempt: number;
-    delivered_to: string;
-  };
 };

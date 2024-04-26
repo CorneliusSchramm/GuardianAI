@@ -1,4 +1,9 @@
 import { TelnyxEvent } from "@/backend/models/types";
+import {
+  handleAnsweredCall,
+  handleHangupCall,
+  handleTranscription,
+} from "@/backend/services/callService";
 
 export async function POST(request: Request) {
   // Log request headers for debugging
@@ -10,12 +15,20 @@ export async function POST(request: Request) {
 
   switch (eventType) {
     case "call.answered":
-      return handleAnsweredCall(request, response);
+      handleAnsweredCall();
+      break;
     case "call.hangup":
-      return handleHangupCall(response);
+      handleHangupCall();
+      break;
     case "call.transcription":
-      return handleTranscription(request, response);
+      handleTranscription();
+      break;
     default:
-      return response.status(200).json({ message: "Event type not supported" });
+      console.log(`Unhandled event type: ${eventType}`);
+      break;
   }
+  return new Response(null, {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }
