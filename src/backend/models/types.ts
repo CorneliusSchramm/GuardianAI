@@ -1,4 +1,4 @@
-type TelnyxEventPayload = {
+export type TelnyxEventPayload = {
   call_control_id: string;
   call_leg_id: string;
   call_session_id: string;
@@ -13,7 +13,7 @@ type TelnyxEventPayload = {
   status_detail?: string; // Optional
 };
 
-type TelnyxEventData = {
+export type TelnyxEventData = {
   event_type: string;
   id: string;
   occurred_at: string;
@@ -21,7 +21,7 @@ type TelnyxEventData = {
   record_type: string;
 };
 
-type TelnyxEvent = {
+export type TelnyxEvent = {
   data: TelnyxEventData;
   meta: {
     attempt: number;
