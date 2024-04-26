@@ -21,6 +21,7 @@ export async function getCallByCallControlId(
     .single();
   return data.call_id;
 }
+
 export async function createCallWithUserAndThreadId(
   callControlId: string,
   threadId: string,

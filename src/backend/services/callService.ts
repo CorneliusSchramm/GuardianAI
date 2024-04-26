@@ -14,7 +14,7 @@ export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
     console.error(`User not found for phone number: ${recipientNumber}`);
     return;
   }
-
+  console.log(`User found with id: ${userId}`);
   // Search and create call
   const call_id = await getCallByCallControlId(callDetails.call_control_id);
   if (call_id) {
@@ -40,10 +40,10 @@ export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
   }
 }
 
-export async function handleHangupCall() {
-  // Service logic to handle call hangup
-}
-
 export async function handleTranscription() {
   // Service logic for transcription
+}
+
+export async function handleHangupCall() {
+  // Service logic to handle call hangup
 }

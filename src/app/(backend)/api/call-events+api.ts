@@ -8,14 +8,18 @@ import {
 export async function POST(request: Request) {
   // Log request headers for debugging
   console.log(request.headers);
+  // console.log("request", request);
 
   // Parse the request body from JSON
-  const requestBody: TelnyxEvent = (await request.json()).body;
+  const requestBody: TelnyxEvent = await request.json();
+  console.log("requestBody", requestBody);
+
   const eventType = requestBody.data.event_type;
 
   switch (eventType) {
     case "call.answered":
-      handleAnsweredCall();
+      console.log(`Call answered.`);
+      handleAnsweredCall(requestBody.data.payload);
       break;
     case "call.hangup":
       handleHangupCall();
