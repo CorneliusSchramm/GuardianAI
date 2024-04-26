@@ -11,37 +11,6 @@ const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-type EventPayload = {
-  call_control_id: string;
-  call_leg_id: string;
-  call_session_id: string;
-  client_state: null | string;
-  connection_id: string;
-  transcription_data?: any; // Optional, replace 'any' with the actual type if known
-  media_name?: string; // Optional
-  media_url?: string; // Optional
-  overlay?: boolean; // Optional
-  playback_id?: string; // Optional
-  status?: string; // Optional
-  status_detail?: string; // Optional
-};
-
-type EventData = {
-  event_type: string;
-  id: string;
-  occurred_at: string;
-  payload: EventPayload;
-  record_type: string;
-};
-
-type Event = {
-  data: EventData;
-  meta: {
-    attempt: number;
-    delivered_to: string;
-  };
-};
-
 interface Call {
   call_id: number;
   user_id: string;
