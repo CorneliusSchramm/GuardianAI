@@ -55,3 +55,38 @@ export async function createCallWithUserAndThreadId(
   }
   return data.call_id;
 }
+
+export async function createTranscriptionChunk(
+  callId: string,
+  text: string
+): Promise<string> {
+  const { data, error } = await supabase
+    .from("calls")
+    .insert([
+      {
+        call_id: callId,
+        text: text,
+      },
+    ])
+    .select("transcription_chunk_id")
+    .single();
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data.transcription_chunk_id;
+}
+
+export async function getUnanalyzedChunksPerCall(
+  callId: string
+): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("transcription_chunks")
+    .select(`transcription_chunk_id, transcription_chunk, analyzed`)
+    .eq("call_id", callId)
+    .eq("analyzed", false)
+    .order("created_at", { ascending: true });
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
