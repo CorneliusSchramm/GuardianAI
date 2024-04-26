@@ -1,4 +1,5 @@
 import { supabase } from "@/config/clients";
+import { TranscriptionChunk } from "@/backend/models/types";
 
 export async function getUserByPhoneNumber(
   phoneNumber: string
@@ -16,7 +17,7 @@ export async function getUserByPhoneNumber(
 
 export async function getCallByCallControlId(
   callControlId: string
-): Promise<string | null> {
+): Promise<number | null> {
   const { data, error } = await supabase
     .from("calls")
     .select("call_id")
@@ -37,7 +38,7 @@ export async function createCallWithUserAndThreadId(
   threadId: string,
   userId: string,
   startTime: string
-): Promise<string | null> {
+): Promise<number | null> {
   const { data, error } = await supabase
     .from("calls")
     .insert([
@@ -57,11 +58,11 @@ export async function createCallWithUserAndThreadId(
 }
 
 export async function createTranscriptionChunk(
-  callId: string,
+  callId: number,
   text: string
-): Promise<string> {
+): Promise<number> {
   const { data, error } = await supabase
-    .from("calls")
+    .from("transcription_chunks")
     .insert([
       {
         call_id: callId,
@@ -77,8 +78,8 @@ export async function createTranscriptionChunk(
 }
 
 export async function getUnanalyzedChunksPerCall(
-  callId: string
-): Promise<string | null> {
+  callId: number
+): Promise<TranscriptionChunk[] | null> {
   const { data, error } = await supabase
     .from("transcription_chunks")
     .select(`transcription_chunk_id, transcription_chunk, analyzed`)

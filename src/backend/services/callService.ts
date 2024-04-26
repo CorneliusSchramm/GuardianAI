@@ -5,6 +5,7 @@ import {
   getCallByCallControlId,
   createCallWithUserAndThreadId,
   createTranscriptionChunk,
+  getUnanalyzedChunksPerCall,
 } from "@/backend/data/callRepository";
 
 export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
@@ -46,20 +47,27 @@ export async function handleTranscription(
   transcriptionDetails: TelnyxEventPayload
   // todo: break out into separate extendable payload types
 ) {
-  const callId = await getCallByCallControlId(
-    transcriptionDetails.call_control_id
-  );
+  const callControlId = transcriptionDetails.call_control_id;
+  const transcriptionText = transcriptionDetails.transcription_data.transcript;
+  await saveNewTranscriptionChunk(callControlId, transcriptionText);
+
+  // analyze transcription
+  const analyzedChunks = await getUnanalyzedChunksPerCall(callId);
+  return;
+}
+
+async function saveNewTranscriptionChunk(
+  callControlId: string,
+  transcriptionText: string
+) {
+  // Service logic to save transcription chunk to database
+  const callId = await getCallByCallControlId(callControlId);
   if (!callId) {
-    console.error(
-      `Call not found for call_control_id: ${transcriptionDetails.call_control_id}`
-    );
+    console.error(`Call not found for call_control_id: ${callControlId}`);
     return;
   }
   // save transcription to db
-  const transcriptionText = transcriptionDetails.transcription_data.transcript;
-  createTranscriptionChunk(callId, transcriptionText);
-
-  return;
+  await createTranscriptionChunk(callId, transcriptionText);
 }
 
 export async function handleHangupCall() {
