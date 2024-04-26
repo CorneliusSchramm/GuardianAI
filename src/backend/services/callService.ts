@@ -1,3 +1,5 @@
+import { openai } from "@/config/clients";
+
 export async function handleAnsweredCall() {
   // Service logic to handle call answered
   // Calls to repositories or other services
