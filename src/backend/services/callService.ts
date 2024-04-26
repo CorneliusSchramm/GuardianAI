@@ -18,7 +18,7 @@ export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
   // Search and create call
   const call_id = await getCallByCallControlId(callDetails.call_control_id);
   if (call_id) {
-    console.log(`Call already exists with id: ${call_id}`); // todo: also check if thread exists for this call (at thoment I assume if a call exists in db then a thread was created)
+    console.warn(`Call already exists with id: ${call_id}`); // todo: also check if thread exists for this call (at thoment I assume if a call exists in db then a thread was created)
     return;
   }
   const newThread = await openai.beta.threads.create();

@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 import Telnyx from "telnyx";
 
-export const telnyx = Telnyx(process.env.TELNYX_API_KEY);
+export const telnyx = Telnyx(process.env.TELNYX_BEARER);
 export const openai = new OpenAI({ apiKey: process.env.OPEN_API_KEY });
 export const supabase = createClient(
   process.env.SUPABASE_URL,
