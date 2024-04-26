@@ -28,6 +28,16 @@ export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
     userId,
     callDetails.start_time
   );
+
+  // start transcription
+  const call = new telnyx.Call({
+    call_control_id: callDetails.call_control_id,
+  });
+  try {
+    await call.transcription_start({ language: "en" });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function handleHangupCall() {
