@@ -27,4 +27,7 @@ export type TelnyxEventPayload = {
   playback_id?: string; // Optional
   status?: string; // Optional
   status_detail?: string; // Optional
+  from?: string; // Optional
+  to?: string; // Optional
+  start_time?: string; // Optional
 };
