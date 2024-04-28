@@ -14,11 +14,11 @@ import { getCurrentTime } from "@/utils/datetime";
 // Constants
 const ANALYSIS_CHUNK_MIN_LENGTH: number = 200;
 const ASSISTENT_ID = "asst_6j3mCmqHeBm1GQP0T8llXTMm";
+const WARNING_AUDIO = "@assets/warning_sound_bite.mp3";
 
 // Logging
 const output = fs.createWriteStream("./out.log");
 const errorOutput = fs.createWriteStream("./err.log");
-//
 const options = {
   stdout: output,
   stderr: errorOutput,
@@ -141,6 +141,19 @@ async function analyzeTranscription(
   } catch (error) {
     console.error("Error:", error);
     throw error; // Rethrowing error to be handled by the caller
+  }
+}
+
+async function playWarningSound(callControlId: string) {
+  const telnyxCall = new telnyx.Call({
+    call_control_id: callControlId,
+  });
+  try {
+    telnyxCall.playback_start({
+      audio_url: WARNING_AUDIO,
+    });
+  } catch (error) {
+    console.error(error);
   }
 }
 
