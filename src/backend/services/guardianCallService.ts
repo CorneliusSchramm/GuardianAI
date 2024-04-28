@@ -88,6 +88,7 @@ export async function handleTranscription(
       call.thread_id
     );
     logger.log(analysisResult);
+    // todo: save analysisResult to supabase and mark transcription chunks as analyzed
     if (analysisResult.score >= 80) {
       console.log("Scam detected!");
       logger.log(
