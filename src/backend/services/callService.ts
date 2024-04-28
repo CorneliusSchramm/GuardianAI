@@ -96,7 +96,7 @@ export async function handleTranscription(
         "\x1b[31m%s\x1b[0m",
         `[${getCurrentTime()}] Scam detected!!! Warning the user...`
       );
-      playWarningSound(call_control_id);
+      await playWarningSound(callControlId); // await necessary here?
     }
   }
 
@@ -159,4 +159,5 @@ async function playWarningSound(callControlId: string) {
 
 export async function handleHangupCall() {
   // Service logic to handle call hangup
+  logger.log(`[${getCurrentTime()}] Call ended. Stopping transcription...`);
 }
