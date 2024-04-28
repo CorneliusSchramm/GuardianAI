@@ -7,9 +7,25 @@ import {
   createTranscriptionChunk,
   getUnanalyzedChunksPerCall,
 } from "@/backend/data/callRepository";
+import { Console } from "console";
+import fs from "fs";
+import { getCurrentTime } from "@/utils/datetime";
 
+// Constants
 const ANALYSIS_CHUNK_MIN_LENGTH: number = 200;
 const ASSISTENT_ID = "asst_6j3mCmqHeBm1GQP0T8llXTMm";
+
+// Logging
+const output = fs.createWriteStream("./out.log");
+const errorOutput = fs.createWriteStream("./err.log");
+//
+const options = {
+  stdout: output,
+  stderr: errorOutput,
+  ignoreErrors: true,
+  colorMode: true,
+};
+const logger = new Console(options);
 
 export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
   // todo: break out into separate extendable payload types
@@ -71,11 +87,10 @@ export async function handleTranscription(
   if (unanalyzedText.length > ANALYSIS_CHUNK_MIN_LENGTH) {
     const analysisResult = await analyzeTranscription(
       unanalyzedText,
-      callControlId,
       call.thread_id
     );
 
-    if (analysisResult.score > 80) {
+    if (analysisResult.score >= 80) {
       console.log("Scam detected!");
       logger.log(
         "\x1b[31m%s\x1b[0m",
@@ -89,57 +104,43 @@ export async function handleTranscription(
 }
 
 async function analyzeTranscription(
-  transcriptionText,
-  callControlId,
-  threadId
+  transcriptionText: string,
+  threadId: string
 ): Promise<AnalysisOutput> {
   try {
+    // Create message in the thread
     const message = await openai.beta.threads.messages.create(threadId, {
       role: "user",
       content: transcriptionText,
     });
 
+    // Start analysis run
     let run = await openai.beta.threads.runs.create(threadId, {
       assistant_id: ASSISTENT_ID,
-      // instructions: "Please provide your assessment of the full phone call in the JSON format outlined in the instructions you received.",
     });
 
+    // Wait for the analysis to complete
     while (["queued", "in_progress", "cancelling"].includes(run.status)) {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       run = await openai.beta.threads.runs.retrieve(run.thread_id, run.id);
     }
 
-    let result: string;
-
     if (run.status === "completed") {
+      // Retrieve the last message of the thread with analysis results
       const messages = await openai.beta.threads.messages.list(run.threadId);
-      for (const message of messages.data.reverse()) {
-        // console.log(`${message.role} > ${message.content[0]["text"].value}`);
-        result = message.content[0]["text"].value;
-      }
+      const lastMessage = messages.data[messages.data.length - 1];
+      const result = lastMessage.content[0]["text"].value;
+
+      // Parse the JSON result and log
+      const parsedResult: AnalysisOutput = JSON.parse(result);
+      logger.log(parsedResult);
+      return parsedResult;
     } else {
-      console.log(run.status);
+      throw new Error(`Analysis failed with status: ${run.status}`);
     }
-
-    // Extracting and returning the result
-    const parsedResult: AnalysisOutput = JSON.parse(result);
-
-    logger.log(parsedResult);
-
-    rparsedResultesult.transcription = transcription_text;
-
-    console.log(result);
-
-    return new Response(result, {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
   } catch (error) {
     console.error("Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    throw error; // Rethrowing error to be handled by the caller
   }
 }
 

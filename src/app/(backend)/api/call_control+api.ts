@@ -24,11 +24,11 @@ interface Call {
 }
 
 // Using require to access fs module
-const fs = require("fs");
+import fs from "fs";
 
 // tail -f -n100 out.log
 // Using require to access console module
-const { Console } = require("console");
+import { Console } from "console";
 
 // Creating write Stream
 const output = fs.createWriteStream("./out.log");
@@ -181,7 +181,6 @@ async function aggregateTranscription(requestData: Event) {
   }
 
   console.log(data);
-  let transcription_text = data.map((d) => d.transcription).join(" ");
 
   console.log(transcription_text);
 
