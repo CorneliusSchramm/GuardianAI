@@ -1,4 +1,5 @@
 import { supabase } from "@/config/clients";
+import { AnalysisOutput } from "@/backend/models/types";
 
 export async function getUserByPhoneNumber(
   phoneNumber: string
@@ -85,4 +86,29 @@ export async function getUnanalyzedChunksPerCall(callId: number) {
     throw new Error(error.message);
   }
   return data;
+}
+
+export async function saveAnanlysisChunk(analysisChunk: AnalysisOutput) {
+  const { data, error } = await supabase
+    .from("analyses_chunks")
+    .insert(analysisChunk)
+    .select()
+    .single();
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
+
+export async function updateTranscriptionChunksAsAnalyzed(
+  transcriptionChunkIds: number[],
+  analysesChunkId: number
+) {
+  const { data, error } = await supabase
+    .from("transcription_chunks")
+    .update({ analyzed: true, analyses_chunk_id: analysesChunkId })
+    .in("transcription_chunk_id", transcriptionChunkIds);
+  if (error) {
+    throw new Error(error.message);
+  }
 }

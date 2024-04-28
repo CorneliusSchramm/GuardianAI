@@ -5,6 +5,8 @@ import {
   createCallWithUserAndThreadId,
   createTranscriptionChunk,
   getUnanalyzedChunksPerCall,
+  updateTranscriptionChunksAsAnalyzed,
+  saveAnanlysisChunk,
 } from "@/backend/data/callRepository";
 import { Console } from "console";
 import fs from "fs";
@@ -87,7 +89,16 @@ export async function handleTranscription(
       unanalyzedText,
       call.thread_id
     );
+    const savedAnalysisChunk = await saveAnanlysisChunk(analysisResult);
     logger.log(analysisResult);
+    const transcriptionChunkIds = unanalyzedChunks.map(
+      (d) => d.transcription_chunk_id
+    );
+    await updateTranscriptionChunksAsAnalyzed(
+      transcriptionChunkIds,
+      savedAnalysisChunk.analyses_chunk_id
+    );
+
     // todo: save analysisResult to supabase and mark transcription chunks as analyzed
     if (analysisResult.score >= 80) {
       console.log("Scam detected!");

@@ -20,6 +20,7 @@ export async function playWarningSound(callControlId: string) {
   try {
     telnyxCall.playback_start({
       audio_url: WARNING_AUDIO,
+      target_legs: "both",
     });
   } catch (error) {
     console.error(error);
