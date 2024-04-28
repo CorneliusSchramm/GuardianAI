@@ -1,4 +1,3 @@
-import { openai, telnyx } from "@/config/clients";
 import { TelnyxEventPayload, AnalysisOutput } from "@/backend/models/types";
 import {
   getUserByPhoneNumber,
@@ -10,11 +9,17 @@ import {
 import { Console } from "console";
 import fs from "fs";
 import { getCurrentTime } from "@/utils/datetime";
+import {
+  playWarningSound,
+  startTranscription,
+} from "@/backend/services/telnyxService";
+import {
+  createThread,
+  analyzeTranscription,
+} from "@/backend/services/openAIService";
 
 // Constants
 const ANALYSIS_CHUNK_MIN_LENGTH: number = 200;
-const ASSISTENT_ID = "asst_6j3mCmqHeBm1GQP0T8llXTMm";
-const WARNING_AUDIO = "@assets/warning_sound_bite.mp3";
 
 // Logging
 const output = fs.createWriteStream("./out.log");
@@ -43,7 +48,7 @@ export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
     console.warn(`Call already exists with id: ${call.call_id}`); // todo: also check if thread exists for this call (at thoment I assume if a call exists in db then a thread was created)
     return;
   }
-  const newThread = await openai.beta.threads.create();
+  const newThread = await createThread();
   await createCallWithUserAndThreadId(
     callDetails.call_control_id,
     newThread.id,
@@ -52,14 +57,7 @@ export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
   );
 
   // start transcription
-  const telnyxCall = new telnyx.Call({
-    call_control_id: callDetails.call_control_id,
-  });
-  try {
-    await telnyxCall.transcription_start({ language: "en" });
-  } catch (error) {
-    console.error(error);
-  }
+  await startTranscription(callDetails.call_control_id);
 }
 
 export async function handleTranscription(
@@ -89,7 +87,7 @@ export async function handleTranscription(
       unanalyzedText,
       call.thread_id
     );
-
+    logger.log(analysisResult);
     if (analysisResult.score >= 80) {
       console.log("Scam detected!");
       logger.log(
@@ -101,60 +99,6 @@ export async function handleTranscription(
   }
 
   return;
-}
-
-async function analyzeTranscription(
-  transcriptionText: string,
-  threadId: string
-): Promise<AnalysisOutput> {
-  try {
-    // Create message in the thread
-    const message = await openai.beta.threads.messages.create(threadId, {
-      role: "user",
-      content: transcriptionText,
-    });
-
-    // Start analysis run
-    let run = await openai.beta.threads.runs.create(threadId, {
-      assistant_id: ASSISTENT_ID,
-    });
-
-    // Wait for the analysis to complete
-    while (["queued", "in_progress", "cancelling"].includes(run.status)) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      run = await openai.beta.threads.runs.retrieve(run.thread_id, run.id);
-    }
-
-    if (run.status === "completed") {
-      // Retrieve the last message of the thread with analysis results
-      const messages = await openai.beta.threads.messages.list(run.threadId);
-      const lastMessage = messages.data[messages.data.length - 1];
-      const result = lastMessage.content[0]["text"].value;
-
-      // Parse the JSON result and log
-      const parsedResult: AnalysisOutput = JSON.parse(result);
-      logger.log(parsedResult);
-      return parsedResult;
-    } else {
-      throw new Error(`Analysis failed with status: ${run.status}`);
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    throw error; // Rethrowing error to be handled by the caller
-  }
-}
-
-async function playWarningSound(callControlId: string) {
-  const telnyxCall = new telnyx.Call({
-    call_control_id: callControlId,
-  });
-  try {
-    telnyxCall.playback_start({
-      audio_url: WARNING_AUDIO,
-    });
-  } catch (error) {
-    console.error(error);
-  }
 }
 
 export async function handleHangupCall() {
