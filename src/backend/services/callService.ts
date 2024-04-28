@@ -69,6 +69,20 @@ export async function handleTranscription(
     .join(" ");
 
   if (unanalyzedText.length > ANALYSIS_CHUNK_MIN_LENGTH) {
+    const analysisResult = await analyzeTranscription(
+      unanalyzedText,
+      callControlId,
+      call.thread_id
+    );
+
+    if (analysisResult.score > 80) {
+      console.log("Scam detected!");
+      logger.log(
+        "\x1b[31m%s\x1b[0m",
+        `[${getCurrentTime()}] Scam detected!!! Warning the user...`
+      );
+      playWarningSound(call_control_id);
+    }
   }
 
   return;
@@ -80,13 +94,13 @@ async function analyzeTranscription(
   threadId
 ): Promise<AnalysisOutput> {
   try {
-    const message = await openai.beta.threads.messages.create(thread_id, {
+    const message = await openai.beta.threads.messages.create(threadId, {
       role: "user",
-      content: transcription_text,
+      content: transcriptionText,
     });
 
-    let run = await openai.beta.threads.runs.create(thread_id, {
-      assistant_id: assistant_id,
+    let run = await openai.beta.threads.runs.create(threadId, {
+      assistant_id: ASSISTENT_ID,
       // instructions: "Please provide your assessment of the full phone call in the JSON format outlined in the instructions you received.",
     });
 
@@ -95,10 +109,10 @@ async function analyzeTranscription(
       run = await openai.beta.threads.runs.retrieve(run.thread_id, run.id);
     }
 
-    let result;
+    let result: string;
 
     if (run.status === "completed") {
-      const messages = await openai.beta.threads.messages.list(run.thread_id);
+      const messages = await openai.beta.threads.messages.list(run.threadId);
       for (const message of messages.data.reverse()) {
         // console.log(`${message.role} > ${message.content[0]["text"].value}`);
         result = message.content[0]["text"].value;
@@ -108,26 +122,13 @@ async function analyzeTranscription(
     }
 
     // Extracting and returning the result
-    result = JSON.parse(result);
+    const parsedResult: AnalysisOutput = JSON.parse(result);
 
-    logger.log({
-      score: result.score,
-      confidence: result.confidence,
-      reasoning: result.reasoning,
-    });
+    logger.log(parsedResult);
 
-    result.transcription = transcription_text;
+    rparsedResultesult.transcription = transcription_text;
 
     console.log(result);
-
-    if (result.score > 80) {
-      console.log("Scam detected!");
-      logger.log(
-        "\x1b[31m%s\x1b[0m",
-        `[${getCurrentTime()}] Scam detected!!! Warning the user...`
-      );
-      playWarningSound(call_control_id);
-    }
 
     return new Response(result, {
       status: 200,

@@ -21,12 +21,13 @@ export async function POST(request: Request) {
       console.log(`Call answered.`);
       handleAnsweredCall(requestBody.data.payload);
       break;
+    case "call.transcription":
+      handleTranscription(requestBody.data.payload);
+      break;
     case "call.hangup":
       handleHangupCall();
       break;
-    case "call.transcription":
-      handleTranscription();
-      break;
+
     default:
       console.log(`Unhandled event type: ${eventType}`);
       break;
