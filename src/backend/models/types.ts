@@ -32,9 +32,10 @@ export type TelnyxEventPayload = {
   start_time?: string; // Optional
 };
 
-export type TranscriptionChunk = {
-  // todo: camel case this db -> ts conversion with import { camelizeKeys } from 'humps';
-  transcription_chunk_id: number;
-  transcription_chunk: string;
-  analyzed: boolean;
+export type AnalysisOutput = {
+  score: number;
+  confidence: number;
+  reasoning: string;
+  category: string;
+  sub_category: string;
 };
