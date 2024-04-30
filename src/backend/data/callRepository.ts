@@ -105,12 +105,24 @@ export async function saveAnanlysisChunk(analysisChunk: AnalysisOutput) {
 }
 
 export async function updateTranscriptionChunksAsAnalyzed(
+  transcriptionChunkIds: number[]
+) {
+  const { data, error } = await supabase
+    .from("transcription_chunks")
+    .update({ analyzed: true })
+    .in("transcription_chunk_id", transcriptionChunkIds);
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function linkTranscriptionChunksToAnalysisChunk(
   transcriptionChunkIds: number[],
   analysesChunkId: number
 ) {
   const { data, error } = await supabase
     .from("transcription_chunks")
-    .update({ analyzed: true, analyses_chunk_id: analysesChunkId })
+    .update({ analyses_chunk_id: analysesChunkId })
     .in("transcription_chunk_id", transcriptionChunkIds);
   if (error) {
     throw new Error(error.message);

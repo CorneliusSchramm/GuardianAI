@@ -7,6 +7,7 @@ import {
   getUnanalyzedChunksPerCall,
   updateTranscriptionChunksAsAnalyzed,
   saveAnanlysisChunk,
+  linkTranscriptionChunksToAnalysisChunk,
 } from "@/backend/data/callRepository";
 import { Console } from "console";
 import fs from "fs";
@@ -90,16 +91,17 @@ export async function handleTranscription(
   logger.log(`[${getCurrentTime()}] unanalyzedText...${unanalyzedText}`);
   if (unanalyzedText.length > ANALYSIS_CHUNK_MIN_LENGTH) {
     logger.log(`[${getCurrentTime()}] Analyzing the call...`);
+    const transcriptionChunkIds = unanalyzedChunks.map(
+      (d) => d.transcription_chunk_id
+    );
+    await updateTranscriptionChunksAsAnalyzed(transcriptionChunkIds);
+
     const analysisResult = await analyzeTranscription(
       unanalyzedText,
       call.thread_id
     );
     const savedAnalysisChunk = await saveAnanlysisChunk(analysisResult);
-    logger.log(analysisResult);
-    const transcriptionChunkIds = unanalyzedChunks.map(
-      (d) => d.transcription_chunk_id
-    );
-    await updateTranscriptionChunksAsAnalyzed(
+    await linkTranscriptionChunksToAnalysisChunk(
       transcriptionChunkIds,
       savedAnalysisChunk.analyses_chunk_id
     );
