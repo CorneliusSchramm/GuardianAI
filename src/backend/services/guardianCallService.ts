@@ -21,7 +21,7 @@ import {
 } from "@/backend/services/openAIService";
 
 // Constants
-const ANALYSIS_CHUNK_MIN_LENGTH: number = 200;
+const ANALYSIS_CHUNK_MIN_LENGTH: number = 150;
 
 // Logging
 const output = fs.createWriteStream("./out.log");
@@ -35,6 +35,9 @@ const options = {
 const logger = new Console(options);
 
 export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
+  logger.log(
+    `[${getCurrentTime()}] Call answered. Unknown number. GuardianAI engaged...`
+  );
   // todo: break out into separate extendable payload types
   // find User
   const recipientNumber = callDetails.to;
@@ -84,7 +87,9 @@ export async function handleTranscription(
     .map((d) => d.transcription_chunk)
     .join(" ");
 
+  logger.log(`[${getCurrentTime()}] unanalyzedText...${unanalyzedText}`);
   if (unanalyzedText.length > ANALYSIS_CHUNK_MIN_LENGTH) {
+    logger.log(`[${getCurrentTime()}] Analyzing the call...`);
     const analysisResult = await analyzeTranscription(
       unanalyzedText,
       call.thread_id
@@ -98,6 +103,7 @@ export async function handleTranscription(
       transcriptionChunkIds,
       savedAnalysisChunk.analyses_chunk_id
     );
+    logger.log(analysisResult);
 
     // todo: save analysisResult to supabase and mark transcription chunks as analyzed
     if (analysisResult.score >= 80) {

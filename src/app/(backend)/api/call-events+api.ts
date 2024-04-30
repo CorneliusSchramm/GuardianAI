@@ -7,12 +7,11 @@ import {
 
 export async function POST(request: Request) {
   // Log request headers for debugging
-  console.log(request.headers);
-  // console.log("request", request);
+  // console.log("request:", request);
 
   // Parse the request body from JSON
   const requestBody: TelnyxEvent = await request.json();
-  console.log("requestBody", requestBody);
+  // console.log("requestBody", requestBody);
 
   const eventType = requestBody.data.event_type;
 

@@ -38,4 +38,5 @@ export type AnalysisOutput = {
   reasoning: string;
   category: string;
   sub_category: string;
+  previous_score: number;
 };

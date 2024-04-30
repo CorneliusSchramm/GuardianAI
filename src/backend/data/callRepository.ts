@@ -12,6 +12,9 @@ export async function getUserByPhoneNumber(
   if (error) {
     throw new Error(error.message);
   }
+  if (!data || !data.user_id) {
+    return;
+  }
   return data.user_id;
 }
 
@@ -64,7 +67,8 @@ export async function createTranscriptionChunk(
     .insert([
       {
         call_id: callId,
-        text: text,
+        transcription_chunk: text,
+        analyzed: false,
       },
     ])
     .select("transcription_chunk_id")
