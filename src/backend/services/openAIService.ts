@@ -37,7 +37,7 @@ export async function analyzeTranscription(
       console.log("Run completed", run.id, run.status);
       // Retrieve the last message of the thread with analysis results
       const messages = await openai.beta.threads.messages.list(run.thread_id);
-      console.log("Messages:", messages);
+      // console.log("Messages:", messages);
       for (const message of messages.data.reverse()) {
         // console.log(`${message.role} > ${message.content[0]["text"].value}`);
         result = message.content[0]["text"].value;
@@ -49,14 +49,17 @@ export async function analyzeTranscription(
       console.log("AI Analysis result:", result);
 
       // Parse the JSON result and return
-      const parsedResult: AnalysisOutput = JSON.parse(result);
-      return parsedResult;
-    } else {
-      throw new Error(`Analysis failed with status: ${run.status}`);
+      try {
+        const parsedResult: AnalysisOutput = JSON.parse(result);
+        return parsedResult;
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+        throw error;
+      }
     }
   } catch (error) {
     console.error("Error:", error);
-    throw error; // Rethrowing error to be handled by the caller
+    throw error;
   }
 }
 

@@ -22,7 +22,8 @@ import {
 } from "@/backend/services/openAIService";
 
 // Constants
-const ANALYSIS_CHUNK_MIN_LENGTH: number = 150;
+const ANALYSIS_CHUNK_MIN_LENGTH: number = 100;
+const FALLBACK_USER_ID = "0deed605-cb31-44a5-8679-f68527021425";
 
 // Logging
 const output = fs.createWriteStream("./out.log");
@@ -42,12 +43,13 @@ export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
   // todo: break out into separate extendable payload types
   // find User
   const recipientNumber = callDetails.to;
-  const userId = await getUserByPhoneNumber(recipientNumber);
+  let userId = await getUserByPhoneNumber(recipientNumber);
+
   if (!userId) {
     console.error(`User not found for phone number: ${recipientNumber}`);
-    return;
+    userId = FALLBACK_USER_ID;
   }
-  console.log(`User found with id: ${userId}`);
+  console.log(`User with id: ${userId}`);
   // Search and create call
   const call = await getCallByCallControlId(callDetails.call_control_id);
   if (call) {
@@ -89,7 +91,10 @@ export async function handleTranscription(
     .join(" ");
 
   logger.log(`[${getCurrentTime()}] unanalyzedText...${unanalyzedText}`);
-  if (unanalyzedText.length > ANALYSIS_CHUNK_MIN_LENGTH) {
+  if (
+    unanalyzedText.length > ANALYSIS_CHUNK_MIN_LENGTH ||
+    unanalyzedText.includes("credit card")
+  ) {
     logger.log(`[${getCurrentTime()}] Analyzing the call...`);
     const transcriptionChunkIds = unanalyzedChunks.map(
       (d) => d.transcription_chunk_id
