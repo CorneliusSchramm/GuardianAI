@@ -40,14 +40,11 @@ export async function POST(request: Request) {
   // Parse the request body from JSON
   const requestData = await request.json();
   console.log(requestData);
-  //   const thread = await openai.beta.threads.create();
-  //   console.log("thread.id", thread.id);
 
   if (requestData.data.event_type === "call.answered") {
     logger.log(
-      `[${getCurrentTime()}] Call answered for unknown number. GuardianAI engaged...`
+      `[${getCurrentTime()}] Call answered. Starting transcription...`
     );
-
     startTranscription(requestData.data.payload.call_control_id);
 
     return new Response(null, {
@@ -124,10 +121,12 @@ async function storeTranscription(requestData) {
   console.log(transcription_text);
 
   // store in supabase
-  return await supabase.from("transcriptions").insert({
-    transcription: transcription_text,
-    call_control_id: call_control_id,
-  });
+  return await supabase
+    .from("transcriptions")
+    .insert({
+      transcription: transcription_text,
+      call_control_id: call_control_id,
+    });
 }
 
 async function aggregateTranscription(requestData) {
@@ -153,7 +152,7 @@ async function aggregateTranscription(requestData) {
   // if transcription_text contains end of a sentence, then analyze the transcription
   // or if the transcription is longer than 200 characters
   if (
-    transcription_text.length > 150 ||
+    transcription_text.length > 200 ||
     transcription_text.includes("credit card")
   ) {
     // transcription_text.includes(".") || transcription_text.includes("?") ||
@@ -174,7 +173,7 @@ async function aggregateTranscription(requestData) {
 
 async function analyzeTranscription(transcription_text, call_control_id) {
   const assistant_id = "asst_6j3mCmqHeBm1GQP0T8llXTMm";
-  const thread_id = "thread_P2xyZEAa2NGFxwuSKJQZ50vT";
+  const thread_id = "thread_jkjV6Q6kQPouKz2f4x0SQ0kV";
 
   try {
     const message = await openai.beta.threads.messages.create(thread_id, {
@@ -197,7 +196,7 @@ async function analyzeTranscription(transcription_text, call_control_id) {
     if (run.status === "completed") {
       const messages = await openai.beta.threads.messages.list(run.thread_id);
       for (const message of messages.data.reverse()) {
-        console.log(`${message.role} > ${message.content[0]["text"].value}`);
+        // console.log(`${message.role} > ${message.content[0]["text"].value}`);
         result = message.content[0]["text"].value;
       }
     } else {
@@ -211,15 +210,13 @@ async function analyzeTranscription(transcription_text, call_control_id) {
       score: result.score,
       confidence: result.confidence,
       reasoning: result.reasoning,
-      category: result.category,
-      sub_category: result.sub_category,
     });
 
     result.transcription = transcription_text;
 
     console.log(result);
 
-    if (result.score >= 85) {
+    if (result.score > 80) {
       console.log("Scam detected!");
       logger.log(
         "\x1b[31m%s\x1b[0m",
@@ -248,7 +245,7 @@ function playWarningSound(call_control_id) {
 
   var raw = JSON.stringify({
     audio_url:
-      "https://adb5-2607-fb91-3184-c440-2167-733d-6dd1-988a.ngrok-free.app/assets/warning_sound_bite.mp3",
+      "https://zwbrsmk-anonymous-8081.exp.direct/assets/warning_sound_bite.mp3",
     target_legs: "both",
   });
 
