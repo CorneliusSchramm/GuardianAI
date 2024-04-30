@@ -11,24 +11,12 @@ const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-interface Call {
-  call_id: number;
-  user_id: string;
-  call_control_id: string | null;
-  duration: number | null;
-  call_start_datetime: string;
-  thread_id: string;
-  was_scam: boolean | null;
-  created_at: string;
-  updated_at: string;
-}
-
 // Using require to access fs module
-import fs from "fs";
+const fs = require("fs");
 
 // tail -f -n100 out.log
 // Using require to access console module
-import { Console } from "console";
+const { Console } = require("console");
 
 // Creating write Stream
 const output = fs.createWriteStream("./out.log");
@@ -51,32 +39,16 @@ export async function POST(request: Request) {
 
   // Parse the request body from JSON
   const requestData = await request.json();
-  const callControlId = requestData.data.payload.call_control_id;
   console.log(requestData);
+  //   const thread = await openai.beta.threads.create();
+  //   console.log("thread.id", thread.id);
 
   if (requestData.data.event_type === "call.answered") {
     logger.log(
-      `[${getCurrentTime()}] Call answered. Starting transcription...`
+      `[${getCurrentTime()}] Call answered for unknown number. GuardianAI engaged...`
     );
+
     startTranscription(requestData.data.payload.call_control_id);
-
-    const newThread = await openai.beta.threads.create();
-
-    // create a new call row in supabase with call_control_id
-    const { data: insertedData, error }: { data: Call[]; error: any } =
-      await supabase
-        .from("calls")
-        .insert([
-          {
-            user_id: "0deed605-cb31-44a5-8679-f68527021425",
-            call_control_id: callControlId,
-            thread_id: newThread.id,
-            call_start_datetime: new Date(),
-          },
-        ])
-        .select();
-
-    console.log("call saved", insertedData);
 
     return new Response(null, {
       status: 200,
@@ -101,13 +73,6 @@ export async function POST(request: Request) {
     });
   }
 
-  // find call in supabase
-  const { data: callData, error }: { data: Call[]; error: any } = await supabase
-    .from("calls")
-    .select()
-    .eq("call_control_id", callControlId);
-
-  const dbCallId = callData[0].call_id;
   // analyze the transcription by calling the OpenAI API
   // return analyzeTranscription(requestData);
   await storeTranscription(requestData);
@@ -150,7 +115,7 @@ function startTranscription(call_control_id) {
     .catch((error) => console.log("error", error));
 }
 
-async function storeTranscription(requestData: Event) {
+async function storeTranscription(requestData) {
   // append the transcription to a file
   const transcription_text =
     requestData.data.payload.transcription_data.transcript;
@@ -165,7 +130,7 @@ async function storeTranscription(requestData: Event) {
   });
 }
 
-async function aggregateTranscription(requestData: Event) {
+async function aggregateTranscription(requestData) {
   const call_control_id = requestData.data.payload.call_control_id;
 
   const { data, error } = await supabase
@@ -181,13 +146,14 @@ async function aggregateTranscription(requestData: Event) {
   }
 
   console.log(data);
+  let transcription_text = data.map((d) => d.transcription).join(" ");
 
   console.log(transcription_text);
 
   // if transcription_text contains end of a sentence, then analyze the transcription
   // or if the transcription is longer than 200 characters
   if (
-    transcription_text.length > 200 ||
+    transcription_text.length > 150 ||
     transcription_text.includes("credit card")
   ) {
     // transcription_text.includes(".") || transcription_text.includes("?") ||
@@ -208,7 +174,7 @@ async function aggregateTranscription(requestData: Event) {
 
 async function analyzeTranscription(transcription_text, call_control_id) {
   const assistant_id = "asst_6j3mCmqHeBm1GQP0T8llXTMm";
-  const thread_id = "thread_jkjV6Q6kQPouKz2f4x0SQ0kV";
+  const thread_id = "thread_P2xyZEAa2NGFxwuSKJQZ50vT";
 
   try {
     const message = await openai.beta.threads.messages.create(thread_id, {
@@ -231,7 +197,7 @@ async function analyzeTranscription(transcription_text, call_control_id) {
     if (run.status === "completed") {
       const messages = await openai.beta.threads.messages.list(run.thread_id);
       for (const message of messages.data.reverse()) {
-        // console.log(`${message.role} > ${message.content[0]["text"].value}`);
+        console.log(`${message.role} > ${message.content[0]["text"].value}`);
         result = message.content[0]["text"].value;
       }
     } else {
@@ -245,13 +211,15 @@ async function analyzeTranscription(transcription_text, call_control_id) {
       score: result.score,
       confidence: result.confidence,
       reasoning: result.reasoning,
+      category: result.category,
+      sub_category: result.sub_category,
     });
 
     result.transcription = transcription_text;
 
     console.log(result);
 
-    if (result.score > 80) {
+    if (result.score >= 85) {
       console.log("Scam detected!");
       logger.log(
         "\x1b[31m%s\x1b[0m",
@@ -280,7 +248,7 @@ function playWarningSound(call_control_id) {
 
   var raw = JSON.stringify({
     audio_url:
-      "https://zwbrsmk-anonymous-8081.exp.direct/assets/warning_sound_bite.mp3",
+      "https://adb5-2607-fb91-3184-c440-2167-733d-6dd1-988a.ngrok-free.app/assets/warning_sound_bite.mp3",
     target_legs: "both",
   });
 
