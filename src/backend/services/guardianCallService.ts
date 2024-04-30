@@ -114,7 +114,7 @@ export async function handleTranscription(
 
     // todo: save analysisResult to supabase and mark transcription chunks as analyzed
     if (analysisResult.score >= 80) {
-      console.log("Scam detected!");
+      console.log("Scam detected! interention now");
       logger.log(
         "\x1b[31m%s\x1b[0m",
         `[${getCurrentTime()}] Scam detected!!! Warning the user...`
