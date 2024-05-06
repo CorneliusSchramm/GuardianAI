@@ -95,3 +95,8 @@ export class TelnyxClient {
     return await this.request<T>({ endpoint, method: "DELETE", customHeaders });
   }
 }
+
+export const telnyx = new TelnyxClient(
+  "https://api.telnyx.com/v2/",
+  process.env.TELNYX_BEARER!
+);
