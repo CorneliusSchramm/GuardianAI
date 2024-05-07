@@ -15,7 +15,7 @@ export type Database = {
           category: string | null;
           confidence: number | null;
           created_at: string | null;
-          previous_score: string | null;
+          previous_score: number | null;
           reasoning: string | null;
           score: number | null;
           sub_category: string | null;
@@ -26,7 +26,7 @@ export type Database = {
           category?: string | null;
           confidence?: number | null;
           created_at?: string | null;
-          previous_score?: string | null;
+          previous_score?: number | null;
           reasoning?: string | null;
           score?: number | null;
           sub_category?: string | null;
