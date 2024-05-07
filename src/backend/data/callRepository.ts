@@ -128,3 +128,15 @@ export async function linkTranscriptionChunksToAnalysisChunk(
     throw new Error(error.message);
   }
 }
+
+export async function getCallOverview(callId: number) {
+  const { data, error } = await supabase
+    .from("v_calls_with_analyses")
+    .select()
+    .eq("call_id", callId)
+    .maybeSingle();
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
