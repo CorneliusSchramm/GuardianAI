@@ -1,4 +1,4 @@
-import { TelnyxEventPayload, AnalysisOutput } from "@/backend/models/types";
+import { TelnyxEventPayload, AnalysisOutput } from "@/models/types";
 import {
   getUserByPhoneNumber,
   getCallByCallControlId,

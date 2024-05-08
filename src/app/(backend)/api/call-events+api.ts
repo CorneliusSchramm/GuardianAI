@@ -1,4 +1,4 @@
-import { TelnyxEvent } from "@/backend/models/types";
+import { TelnyxEvent } from "@/models/types";
 import {
   handleAnsweredCall,
   handleHangupCall,

@@ -33,10 +33,13 @@ export type TelnyxEventPayload = {
 };
 
 export type AnalysisOutput = {
-  score: number;
-  confidence: number;
-  reasoning: string;
-  category: string;
-  sub_category: string;
+  analyses_chunk_id?: never;
+  category?: string;
+  confidence?: number;
+  created_at?: string;
   previous_score: number;
+  reasoning?: string;
+  score?: number;
+  sub_category?: string;
+  updated_at?: string;
 };

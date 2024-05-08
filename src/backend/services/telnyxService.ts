@@ -1,4 +1,4 @@
-import { telnyx } from "@/config/clients";
+import { telnyx } from "@/backend/config/clients";
 
 const WARNING_AUDIO =
   "https://kjkdpsfjyswkowwymfge.supabase.co/storage/v1/object/public/test/warning_sound_bite.mp3?t=2024-04-30T20%3A20%3A53.697Z";

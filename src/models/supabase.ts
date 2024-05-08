@@ -15,6 +15,7 @@ export type Database = {
           category: string | null
           confidence: number | null
           created_at: string | null
+          previous_score: number | null
           reasoning: string | null
           score: number | null
           sub_category: string | null
@@ -25,6 +26,7 @@ export type Database = {
           category?: string | null
           confidence?: number | null
           created_at?: string | null
+          previous_score?: number | null
           reasoning?: string | null
           score?: number | null
           sub_category?: string | null
@@ -35,6 +37,7 @@ export type Database = {
           category?: string | null
           confidence?: number | null
           created_at?: string | null
+          previous_score?: number | null
           reasoning?: string | null
           score?: number | null
           sub_category?: string | null
@@ -123,10 +126,24 @@ export type Database = {
             referencedColumns: ["analyses_chunk_id"]
           },
           {
+            foreignKeyName: "public_transcription_chunks_analyses_chunk_id_fkey"
+            columns: ["analyses_chunk_id"]
+            isOneToOne: false
+            referencedRelation: "v_calls_with_analyses"
+            referencedColumns: ["analyses_chunk_id"]
+          },
+          {
             foreignKeyName: "transcription_chunks_call_id_fkey"
             columns: ["call_id"]
             isOneToOne: false
             referencedRelation: "calls"
+            referencedColumns: ["call_id"]
+          },
+          {
+            foreignKeyName: "transcription_chunks_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "v_calls_with_analyses"
             referencedColumns: ["call_id"]
           },
         ]
@@ -157,6 +174,7 @@ export type Database = {
       }
       users: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
           first_name: string | null
           last_name: string | null
@@ -165,6 +183,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
           first_name?: string | null
           last_name?: string | null
@@ -173,6 +192,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
           first_name?: string | null
           last_name?: string | null
@@ -192,7 +212,25 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_calls_with_analyses: {
+        Row: {
+          analyses_chunk_id: number | null
+          call_control_id: string | null
+          call_id: number | null
+          call_start_datetime: string | null
+          category: string | null
+          confidence: number | null
+          created_at: string | null
+          previous_score: number | null
+          reasoning: string | null
+          score: number | null
+          sub_category: string | null
+          thread_id: string | null
+          transcription: string | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
