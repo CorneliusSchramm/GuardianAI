@@ -8,8 +8,7 @@ import React from 'react'
 export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState('')
-//   const [website, setWebsite] = useState('')
-//   const [avatarUrl, setAvatarUrl] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
 
   useEffect(() => {
     if (session) getProfile()
@@ -22,7 +21,7 @@ export default function Account({ session }: { session: Session }) {
 
       const { data, error, status } = await supabase
         .from('users')
-        .select(`first_name, last_name, user_id`)
+        .select(`first_name, last_name, user_id, avatar_url`)
         .eq('user_id', session?.user.id)
         .single()
       if (error && status !== 406) {
@@ -30,9 +29,9 @@ export default function Account({ session }: { session: Session }) {
       }
 
       if (data) {
-        setUsername(`${data.first_name} ${data.last_name}`)
+        setUsername(data.first_name)
         // setWebsite(data.website)
-        // setAvatarUrl(data.avatar_url)
+        setAvatarUrl(data.avatar_url)
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -45,11 +44,9 @@ export default function Account({ session }: { session: Session }) {
 
   async function updateProfile({
     username,
-    website,
     avatar_url,
   }: {
-    username: string
-    website: string
+    username: string,
     avatar_url: string
   }) {
     try {
@@ -57,14 +54,13 @@ export default function Account({ session }: { session: Session }) {
       if (!session?.user) throw new Error('No user on the session!')
 
       const updates = {
-        id: session?.user.id,
-        username,
-        website,
+        user_id: session?.user.id,
+        first_name: username,
         avatar_url,
-        updated_at: new Date(),
+        updated_at: new Date().toISOString(),
       }
 
-      const { error } = await supabase.from('profiles').upsert(updates)
+      const { error } = await supabase.from('users').upsert(updates)
 
       if (error) {
         throw error
@@ -90,7 +86,7 @@ export default function Account({ session }: { session: Session }) {
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
           title={loading ? 'Loading ...' : 'Update'}
-          onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })}
+          onPress={() => updateProfile({ username, avatar_url: avatarUrl })}
           disabled={loading}
         />
       </View>
