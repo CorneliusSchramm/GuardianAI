@@ -1,5 +1,5 @@
-import { openai } from "@/config/clients";
-import { AnalysisOutput } from "@/backend/models/types";
+import { openai } from "@/backend/config/clients";
+import { AnalysisOutput } from "@/models/types";
 
 const ASSISTENT_ID = "asst_6j3mCmqHeBm1GQP0T8llXTMm";
 

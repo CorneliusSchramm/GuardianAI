@@ -1,5 +1,5 @@
-import { supabase } from "@/config/clients";
-import { AnalysisOutput } from "@/backend/models/types";
+import { supabase } from "@/backend/config/clients";
+import { AnalysisOutput } from "@/models/types";
 
 export async function getUserByPhoneNumber(
   phoneNumber: string
