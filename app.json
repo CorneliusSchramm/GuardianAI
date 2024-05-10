@@ -4,7 +4,7 @@
     "userInterfaceStyle": "automatic",
     "orientation": "default",
     "web": {
-      "output": "single", // server
+      "output": "server",
       "bundler": "metro"
     },
     "plugins": [
