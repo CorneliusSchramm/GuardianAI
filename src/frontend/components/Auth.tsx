@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Alert, StyleSheet, View, AppState } from 'react-native'
 import { supabase } from '@/frontend/lib/supabase'
 import { Button, Input } from 'react-native-elements'
+import { router } from 'expo-router'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -42,7 +43,12 @@ export default function Auth() {
       password: password,
     })
 
-    if (error) Alert.alert(error.message)
+    if (error) {
+      Alert.alert(error.message) 
+    }
+    else {
+      router.navigate("/verify-phone")
+    }
     // todo: check if password was long enough 
     // if (!session) Alert.alert('Please check your inbox for email verification!')
     setLoading(false)

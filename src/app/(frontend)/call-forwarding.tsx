@@ -26,7 +26,7 @@ export default function SetupCallForwarding() {
       <Button title='Settings' onPress={() => Linking.openURL('App-Prefs:Phone')}/>
 
       <Button title='Test Call'/>
-      <Button title='Finish Setup' onPress={() => router.navigate("/home")}/>
+      <Button title='Finish Setup' onPress={() => router.replace("/home")}/>
 
     </View>
   )
