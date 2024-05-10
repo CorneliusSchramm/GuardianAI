@@ -1,8 +1,8 @@
 import React, {Component, useEffect, useState} from 'react';
 import {StyleSheet, Alert, FlatList, ActivityIndicator} from 'react-native';
-import {Colors, BorderRadiuses, View, Image, ListItem, Text } from 'react-native-ui-lib';
-import orders, {OrderType} from '@assets/orders';
+import {Colors, BorderRadiuses,Badge, View, ListItem, Text } from 'react-native-ui-lib';
 import { supabase } from '@/frontend/lib/supabase';
+import { formatDateTime } from '@/utils/datetime';
 
 
 type CallData = {
@@ -23,7 +23,6 @@ export default function App () {
         .from("v_calls_with_analyses")
         .select("call_id, call_start_datetime, transcription,score,category")
         .not("score", "is", null)
-      
       setData(data);
     } catch (error) {
       console.error(error);
@@ -35,6 +34,7 @@ export default function App () {
   useEffect(() => {
     getMovies();
   }, []);
+  
 
   return (
     <View style={{flex: 1, padding: 24}}>
@@ -47,15 +47,44 @@ export default function App () {
             data={data}
             keyExtractor={({ call_id }) => call_id.toString()}
             renderItem={({ item }) => (
-              <Text>
-                {item.call_id}, {item.category}
-              </Text>
+              <ListItem activeBackgroundColor={Colors.grey60}
+                        activeOpacity={0.3}
+                        height={77.5}
+                        onPress={() => Alert.alert(`pressed on #${item.call_id + 1}`)} 
+                        style={styles.border}
+                        >
+                  <ListItem.Part  >
+                    <Badge 
+                      label={item.score.toString()} 
+                      size={20}
+                      backgroundColor={item.score > 80 ? 'red' : 'green'}
+                    />
+                  </ListItem.Part>
+                  <ListItem.Part >
+                      <Badge label={item.category} backgroundColor='blue' size={20}/>
+                  </ListItem.Part>
+                  <ListItem.Part >
+                      <Text  grey10 text100 > {formatDateTime(item.call_start_datetime)}</Text>
+                  </ListItem.Part>
+              </ListItem>
             )} />
       )}
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  border: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.grey50
+  },
+  itemContainer: {
+    borderBottomWidth: 1,
+    borderColor: Colors.grey70,
+    paddingVertical: 10,
+    marginHorizontal: 5
+  }
+});
 
 // export default class BasicListScreen extends Component {
 
@@ -113,15 +142,3 @@ export default function App () {
 //   }
 // }
 
-// const styles = StyleSheet.create({
-//   image: {
-//     width: 54,
-//     height: 54,
-//     borderRadius: BorderRadiuses.br20,
-//     marginHorizontal: 14
-//   },
-//   border: {
-//     borderBottomWidth: StyleSheet.hairlineWidth,
-//     borderColor: Colors.grey70
-//   }
-// });
