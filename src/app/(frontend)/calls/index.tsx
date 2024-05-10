@@ -1,10 +1,10 @@
-import React, {Component, useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, Alert, FlatList, ActivityIndicator} from 'react-native';
-import {Colors, BorderRadiuses,Badge, View, ListItem, Text } from 'react-native-ui-lib';
+import {Colors,Badge, View, ListItem, Text } from 'react-native-ui-lib';
 import { supabase } from '@/frontend/lib/supabase';
 import { formatDateTime } from '@/utils/datetime';
 import { useQuery } from '@tanstack/react-query';
-
+import { router } from 'expo-router';
 
 type CallData = {
   call_id: number;
@@ -42,7 +42,7 @@ export default function Page () {
               <ListItem activeBackgroundColor={Colors.grey60}
                         activeOpacity={0.3}
                         height={77.5}
-                        onPress={() => Alert.alert(`pressed on #${item.call_id + 1}`)} 
+                        onPress={() => router.push(`/calls/${item.call_id}`)} 
                         style={styles.border}
                         >
                   <ListItem.Part  >
