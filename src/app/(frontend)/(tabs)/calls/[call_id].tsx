@@ -4,7 +4,7 @@ import { Badge, View, Card, Text } from 'react-native-ui-lib';
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/frontend/lib/supabase";
 import { formatDateTime } from "@/utils/datetime";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 export default function Page() {
   const { call_id } = useLocalSearchParams();
@@ -29,6 +29,7 @@ export default function Page() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{ title: 'Details' }} />
       <Card style={styles.card}>
         <Text style={styles.title} text30 grey10>{`Call - ${call_id}`}</Text>
         <Text style={styles.date} text70 grey10>{formatDateTime(data.call_start_datetime)}</Text>

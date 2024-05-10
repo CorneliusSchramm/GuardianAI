@@ -8,7 +8,6 @@ export default function Layout() {
     <Stack
       screenOptions={{
         headerShown: true,
-        headerTitle: "",
         headerBackTitleVisible: true,
         // headerTintColor: '#fff',
         headerTitleStyle: {
