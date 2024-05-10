@@ -2,6 +2,7 @@ import "react-native-url-polyfill/auto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/models/supabase";
+import { Platform } from "react-native";
 
 // todo: enable RLS otherwise anon key not save. also put in const
 const supabaseUrl = "https://kjkdpsfjyswkowwymfge.supabase.co";
@@ -10,7 +11,7 @@ const supabaseAnonKey =
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
-    storage: AsyncStorage,
+    ...(Platform.OS !== 'web' ? { storage: AsyncStorage } : {}),
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,

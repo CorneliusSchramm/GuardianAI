@@ -4,7 +4,8 @@ import { StyleSheet, View, Alert } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import { Session } from '@supabase/supabase-js'
 import React from 'react'
-import { Link } from 'expo-router'
+import { Link, router, useNavigation } from 'expo-router'
+import VerifyPhone from '@/app/(frontend)/verify-phone'
 
 export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true)
@@ -94,6 +95,9 @@ export default function Account({ session }: { session: Session }) {
 
       <View style={styles.verticallySpaced}>
         <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
+      </View>
+      <View style={styles.verticallySpaced}>
+        <Button title="Next" onPress={() => router.navigate('/verify-phone')} />
       </View>
       <View style={{ borderBottomColor: 'black', borderBottomWidth: 1, marginBottom: 20 , marginTop: 20}} />
       <View style={styles.verticallySpaced}>

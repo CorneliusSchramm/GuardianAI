@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Alert, StyleSheet, View, AppState } from 'react-native'
 import { supabase } from '@/frontend/lib/supabase'
 import { Button, Input } from 'react-native-elements'
-import { router } from 'expo-router'
+import { Link, Stack, router } from 'expo-router'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -17,71 +17,65 @@ AppState.addEventListener('change', (state) => {
   }
 })
 
-export default function Auth() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+export default function VerifyPhone() {
+  const [phone, setPhone] = useState('')
+  const [token, setToken] = useState('')
   const [loading, setLoading] = useState(false)
 
-  async function signInWithEmail() {
+  async function updatePhone() {
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
+    const { error } = await supabase.auth.updateUser({
+      phone: phone,
     })
 
     if (error) Alert.alert(error.message)
     setLoading(false)
   }
 
-  async function signUpWithEmail() {
+  async function verifyPhone() {
     setLoading(true)
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    })
+    // const { error } = await supabase.auth.verifyOtp({
+    //   phone: phone,
+    //   token: token,
+    //   type: 'sms'
+    // })
+    const error = null
 
-    if (error) {
-      Alert.alert(error.message) 
-    }
-    else {
-      router.navigate("/verify-phone")
-    }
-    // todo: check if password was long enough 
-    // if (!session) Alert.alert('Please check your inbox for email verification!')
+    
+    if (error) Alert.alert(error.message)
     setLoading(false)
   }
 
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{title: 'Verify your phone number', headerShown: true, headerBackTitleVisible: false}} />
+
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input
-          label="Email"
+          label="Phone"
           leftIcon={{ type: 'font-awesome', name: 'envelope' }}
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          placeholder="email@address.com"
-          autoCapitalize={'none'}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Password"
-          leftIcon={{ type: 'font-awesome', name: 'lock' }}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          secureTextEntry={true}
-          placeholder="Password"
+          onChangeText={(text) => setPhone(text)}
+          value={phone}
+          placeholder="+1 234 456 7890"
           autoCapitalize={'none'}
         />
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
+        <Button title="Send SMS" disabled={loading} onPress={() => updatePhone()} />
       </View>
       <View style={styles.verticallySpaced}>
-        <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
+        <Input
+          label="Token"
+          leftIcon={{ type: 'font-awesome', name: 'lock' }}
+          onChangeText={(text) => setToken(text)}
+          value={token}
+          secureTextEntry={true}
+          placeholder="Token"
+          autoCapitalize={'none'}
+        />
+      </View>
+      <View style={styles.verticallySpaced}>
+        <Button title="Verify" disabled={loading} onPress={() => router.navigate('/call-forwarding')} />
       </View>
     </View>
   )
