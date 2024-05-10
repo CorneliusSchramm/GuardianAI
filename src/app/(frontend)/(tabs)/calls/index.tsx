@@ -4,7 +4,7 @@ import {Colors,Badge, View, ListItem, Text } from 'react-native-ui-lib';
 import { supabase } from '@/frontend/lib/supabase';
 import { formatDateTime } from '@/utils/datetime';
 import { useQuery } from '@tanstack/react-query';
-import { router } from 'expo-router';
+import { Stack, router } from 'expo-router';
 
 type CallData = {
   call_id: number;
@@ -30,6 +30,7 @@ export default function Page () {
   });
   return (
     <View style={{flex: 1, padding: 24}}>
+      <Stack.Screen options={{title: 'Calls', headerShown: false, headerBackTitleVisible: false}} />
       <Text text30BO center>Call Data</Text>
       {isLoading ? (
         <ActivityIndicator />
