@@ -3,6 +3,7 @@ import {StyleSheet, Alert, FlatList, ActivityIndicator} from 'react-native';
 import {Colors, BorderRadiuses,Badge, View, ListItem, Text } from 'react-native-ui-lib';
 import { supabase } from '@/frontend/lib/supabase';
 import { formatDateTime } from '@/utils/datetime';
+import { useQuery } from '@tanstack/react-query';
 
 
 type CallData = {
@@ -13,29 +14,20 @@ type CallData = {
   category: string;
 }
 
-export default function App () {
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState<CallData[]>([]);
-
-  const getCallHistory = async () => {
-    try {
+export default function Page () {  
+  const {data, isLoading, error } = useQuery<CallData[]>({
+    queryKey: ['calls'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("v_calls_with_analyses")
         .select("call_id, call_start_datetime, transcription,score,category")
         .not("score", "is", null)
-      setData(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getCallHistory();
-  }, []);
-  
-
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+  });
   return (
     <View style={{flex: 1, padding: 24}}>
       <Text text30BO center>Call Data</Text>
