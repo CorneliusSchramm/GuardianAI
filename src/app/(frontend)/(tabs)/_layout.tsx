@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Auth from "@/frontend/components/Auth";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Tab } from "react-native-elements";
 
 
 
@@ -19,7 +20,7 @@ export default function Layout() {
       }}
     />
     <Tabs.Screen
-      name='history'
+      name='calls'
       options={{
         title: 'Call History',
         headerShown: false,
@@ -34,9 +35,7 @@ export default function Layout() {
         tabBarIcon: ({ color }) => <FontAwesome size={28} name="gear" color={color} />,
       }}
     />
-
-
-
+    {/* <Tabs.Screen name='calls/[call_id]' options={{href:null}} /> */}
   </Tabs>;
 }
 
