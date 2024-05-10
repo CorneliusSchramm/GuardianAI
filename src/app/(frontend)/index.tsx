@@ -1,6 +1,6 @@
-import { Link } from "expo-router";
+import { Link, Stack, router } from "expo-router";
 import React from "react";
-import { Text, View , TouchableOpacity} from "react-native";
+import { Text, View , TouchableOpacity, Button} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from 'expo-image';
 import { Asset } from 'expo-asset';
@@ -10,6 +10,7 @@ const image = Asset.fromModule(require('@assets/landing-image.webp')).uri;
 export default function Page() {
   return (
     <View className="flex bg-white dark:bg-black">
+      <Stack.Screen options={{headerShown: false}} />
       <Header />
       <Content />
       <Footer />
@@ -43,12 +44,10 @@ function Content() {
             </Text>
 
             <View className="flex-row  gap-4">
-                <TouchableOpacity  className="flex justify-center items-center rounded-md bg-blue-600 text-white h-9 w-20">
-                  <Link href="/auth">
+                <TouchableOpacity onPress={() => router.navigate("/auth")} className="flex justify-center items-center rounded-md bg-blue-600 text-white h-9 w-20">
                     <Text className="text-white">
                       Sign In
                     </Text>
-                  </Link>
                 </TouchableOpacity>
             </View>
           </View>
