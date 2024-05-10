@@ -9,7 +9,9 @@ import Settings from "./(frontend)/(tabs)/settings";
 
 
 export default function Layout() {
-  return <Stack
+  return 
+        <QueryProvider>
+    <Stack
     screenOptions={{
       headerShown: false,
       headerBackTitleVisible: true,
@@ -17,5 +19,5 @@ export default function Layout() {
       headerTitleStyle: {
         fontWeight: 'bold',
       },
-    }}/>;
-}
+    }}/>
+    </QueryProvider>;

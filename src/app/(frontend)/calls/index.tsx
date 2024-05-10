@@ -1,41 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet , TouchableOpacity} from "react-native";
-import { getCallOverview } from '@/backend/data/callRepository';
-export default function Page() {
-  const [callDetails, setCallDetails] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const callId = 32
-  // this code now produces an error with missing OPENAI_API_KEY
-  // I think it may be related to: 
-//   The following packages should be updated for best compatibility with the installed expo version:
-//   expo@50.0.14 - expected version: ~50.0.17
-//   expo-av@13.10.5 - expected version: ~13.10.6
-//   expo-constants@15.4.5 - expected version: ~15.4.6
-//   expo-router@3.4.8 - expected version: ~3.4.10
-//   expo-splash-screen@0.26.4 - expected version: ~0.26.5
-// Your project may not work correctly until you install the correct versions of the packages.
+import React from 'react';
+import {StyleSheet, Alert, FlatList, ActivityIndicator} from 'react-native';
+import {Colors,Badge, View, ListItem, Text } from 'react-native-ui-lib';
+import { supabase } from '@/frontend/lib/supabase';
+import { formatDateTime } from '@/utils/datetime';
+import { useQuery } from '@tanstack/react-query';
+import { router } from 'expo-router';
 
-//   useEffect(() => {
-//     async function fetchCallDetails() {
-//         try {
-//             const data = await getCallOverview(callId);
-//             setCallDetails(data);
-//             setError(null);
-//         } catch (err) {
-//             setError((err as Error).message);
-//             setCallDetails(null);
-//         } finally {
-//             setLoading(false);
-//         }
-//     }
-
-//     if (!isNaN(callId)) {
-//         fetchCallDetails();
-//     } else {
-//         setError('Invalid Call ID');
-//         setLoading(false);
-//     }
-// }, [callId]);
-  return <Text className='h-7'>Home page </Text>;
+type CallData = {
+  call_id: number;
+  call_start_datetime: string;
+  transcription: string;
+  score: number;
+  category: string;
 }
+
+export default function Page () {  
+  const {data, isLoading, error } = useQuery<CallData[]>({
+    queryKey: ['calls'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("v_calls_with_analyses")
+        .select("call_id, call_start_datetime, transcription,score,category")
+        .not("score", "is", null)
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+  });
+  return (
+    <View style={{flex: 1, padding: 24}}>
+      <Text text30BO center>Call Data</Text>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        
+        <FlatList
+            data={data}
+            keyExtractor={({ call_id }) => call_id.toString()}
+            renderItem={({ item }) => (
+              <ListItem activeBackgroundColor={Colors.grey60}
+                        activeOpacity={0.3}
+                        height={77.5}
+                        onPress={() => router.push(`/calls/${item.call_id}`)} 
+                        style={styles.border}
+                        >
+                  <ListItem.Part  >
+                    <Badge 
+                      label={item.score.toString()} 
+                      size={20}
+                      backgroundColor={item.score > 80 ? 'red' : 'green'}
+                    />
+                  </ListItem.Part>
+                  <ListItem.Part >
+                      <Badge label={item.category} backgroundColor='blue' size={20}/>
+                  </ListItem.Part>
+                  <ListItem.Part >
+                      <Text  grey10 text100 > {formatDateTime(item.call_start_datetime)}</Text>
+                  </ListItem.Part>
+              </ListItem>
+            )} />
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  border: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.grey50
+  },
+  itemContainer: {
+    borderBottomWidth: 1,
+    borderColor: Colors.grey70,
+    paddingVertical: 10,
+    marginHorizontal: 5
+  }
+});
