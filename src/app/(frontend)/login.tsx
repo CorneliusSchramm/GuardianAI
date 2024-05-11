@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import Auth from "@/frontend/components/Auth";
 import { Stack } from "expo-router";
 import { TouchableOpacity, View, Text } from "react-native";
+import {Button} from 'react-native-ui-lib'
+import { globalStyles } from './theme';
 
 
 
@@ -14,7 +16,7 @@ export default function Login() {
     };
 
     return (
-        <View>
+        <View style={globalStyles.container}>
             {/* {!showLogin && (
                 <TouchableOpacity
                     style={styles.loginButton}

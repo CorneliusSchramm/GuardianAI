@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import { Alert, StyleSheet, View, AppState } from 'react-native'
 import { supabase } from '@/frontend/lib/supabase'
-import { Button, Input } from 'react-native-elements'
+import { Input } from 'react-native-elements'
 import { Link, Stack, router } from 'expo-router'
+import { Button } from 'react-native-ui-lib'
+import { globalStyles } from './theme'
+import { telnyx } from '@/backend/config/clients'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -24,11 +27,28 @@ export default function VerifyPhone() {
 
   async function updatePhone() {
     setLoading(true)
-    const { error } = await supabase.auth.updateUser({
-      phone: phone,
-    })
+    // const { error } = await supabase.auth.updateUser({
+    //   phone: phone,
+    // })
 
-    if (error) Alert.alert(error.message)
+    const response = await fetch('/api/otp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ phone: phone }
+      )
+    }).then(response => console.log(response))
+    .catch(error => console.log(error))
+    // const data = await response.json();
+    
+    
+    // if (data.error) {
+    //   Alert.alert(data.error)    
+    // } else {
+    //   Alert.alert('SMS sent to ' + phone)
+    // }
+
     setLoading(false)
   }
 
@@ -39,18 +59,30 @@ export default function VerifyPhone() {
     //   token: token,
     //   type: 'sms'
     // })
-    const error = null
+    const response = await fetch('/api/otp-verification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          phone: phone, 
+          token: token,
+          user_id: await supabase.auth.getUser().then(user => user.data.user.id)
+        }
+      )
+    }).then(response => console.log(response))
+    .catch(error => console.log(error))
 
-    
-    if (error) Alert.alert(error.message)
+
     setLoading(false)
+    router.navigate('/call-forwarding')
   }
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <Stack.Screen options={{title: 'Verify your phone number', headerShown: true, headerBackTitleVisible: false}} />
 
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+      <View style={[globalStyles.verticallySpaced, globalStyles.mt20]}>
         <Input
           label="Phone"
           leftIcon={{ type: 'font-awesome', name: 'envelope' }}
@@ -60,10 +92,10 @@ export default function VerifyPhone() {
           autoCapitalize={'none'}
         />
       </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button title="Send SMS" disabled={loading} onPress={() => updatePhone()} />
+      <View style={[globalStyles.verticallySpaced]}>
+        <Button label="Send SMS" disabled={loading} onPress={() => updatePhone()} />
       </View>
-      <View style={styles.verticallySpaced}>
+      <View style={[globalStyles.verticallySpaced, globalStyles.mt20]}>
         <Input
           label="Token"
           leftIcon={{ type: 'font-awesome', name: 'lock' }}
@@ -74,24 +106,9 @@ export default function VerifyPhone() {
           autoCapitalize={'none'}
         />
       </View>
-      <View style={styles.verticallySpaced}>
-        <Button title="Verify" disabled={loading} onPress={() => router.navigate('/call-forwarding')} />
+      <View style={globalStyles.verticallySpaced}>
+        <Button label="Verify" disabled={loading} onPress={() => verifyPhone()} />
       </View>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    padding: 12,
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
-  },
-  mt20: {
-    marginTop: 20,
-  },
-})

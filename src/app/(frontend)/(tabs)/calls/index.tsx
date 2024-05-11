@@ -5,6 +5,7 @@ import { supabase } from '@/frontend/lib/supabase';
 import { formatDateTime } from '@/utils/datetime';
 import { useQuery } from '@tanstack/react-query';
 import { Stack, router } from 'expo-router';
+import { globalStyles } from '../../theme';
 
 type CallData = {
   call_id: number;
@@ -29,7 +30,7 @@ export default function Page () {
     },
   });
   return (
-    <View style={{flex: 1, padding: 24}}>
+    <View style={globalStyles.container}>
       <Stack.Screen options={{title: 'Calls', headerShown: false, headerBackTitleVisible: false}} />
       <Text text30BO center>Call Data</Text>
       {isLoading ? (
