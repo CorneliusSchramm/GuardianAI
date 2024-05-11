@@ -42,8 +42,6 @@ npx expo start --tunnel
 }
  ```
 
-Use "tail -f -n100 out.log" to track secondary console.
-
 
 I also recommend installing the following VS add-ons:
 

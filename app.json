@@ -24,6 +24,9 @@
       "eas": {
         "projectId": "8e0f70ab-64a9-41d4-8ed3-681a066a882c"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "io.guardian-ai.mo"
     }
   }
 }
