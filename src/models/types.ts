@@ -43,3 +43,10 @@ export type AnalysisOutput = {
   sub_category?: string;
   updated_at?: string;
 };
+
+export type TelnyxPhoneVerificationResponse = {
+  data: {
+    phone_number: string,
+    response_code: string
+  }
+};

@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Auth from "@/frontend/components/Auth";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tab } from "react-native-elements";
+import { Colors } from "react-native-ui-lib";
 
 
 
@@ -16,6 +17,7 @@ export default function Layout() {
       options={{
         title: 'Home',
         headerShown: false,
+        tabBarActiveTintColor: Colors.$iconPrimary ,
         tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
       }}
     />
@@ -24,6 +26,8 @@ export default function Layout() {
       options={{
         title: 'Call History',
         headerShown: false,
+        tabBarActiveTintColor: Colors.$iconPrimary ,
+
         tabBarIcon: ({ color }) => <FontAwesome size={28} name="history" color={color} />,
       }}
     />
@@ -32,6 +36,8 @@ export default function Layout() {
       options={{
         headerShown: false,
         title: 'Settings',
+        tabBarActiveTintColor: Colors.$iconPrimary ,
+
         tabBarIcon: ({ color }) => <FontAwesome size={28} name="gear" color={color} />,
       }}
     />

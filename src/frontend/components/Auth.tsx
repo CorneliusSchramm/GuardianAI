@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { Alert, StyleSheet, View, AppState } from 'react-native'
 import { supabase } from '@/frontend/lib/supabase'
-import { Button, Input } from 'react-native-elements'
+import { Input } from 'react-native-elements'
 import { router } from 'expo-router'
+import { Button, Colors } from 'react-native-ui-lib'
+import { globalStyles } from '@/app/(frontend)/theme'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -44,7 +46,7 @@ export default function Auth() {
     })
 
     if (error) {
-      Alert.alert(error.message) 
+      Alert.alert(error.message)
     }
     else {
       router.navigate("/verify-phone")
@@ -55,42 +57,42 @@ export default function Auth() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input
-          label="Email"
-          leftIcon={{ type: 'font-awesome', name: 'envelope' }}
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          placeholder="email@address.com"
-          autoCapitalize={'none'}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Password"
-          leftIcon={{ type: 'font-awesome', name: 'lock' }}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          secureTextEntry={true}
-          placeholder="Password"
-          autoCapitalize={'none'}
-        />
-      </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
-      </View>
+      <View style={[styles.container]}>
+        <View style={[styles.verticallySpaced, styles.mt20]}>
+          <Input
+            label="Email"
+            leftIcon={{ type: 'font-awesome', name: 'envelope' }}
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            placeholder="email@address.com"
+            autoCapitalize={'none'}
+          />
+        </View>
+        <View style={styles.verticallySpaced}>
+          <Input
+            label="Password"
+            leftIcon={{ type: 'font-awesome', name: 'lock' }}
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            secureTextEntry={true}
+            placeholder="Password"
+            autoCapitalize={'none'}
+          />
+        </View>
+        <View style={[styles.verticallySpaced, styles.mt20]}>
+          <Button label="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
+        </View>
+        <View style={styles.verticallySpaced}>
+          <Button label="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
+        </View>
+
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
-    padding: 12,
+    backgroundColor: Colors.$backgroundDefault,
   },
   verticallySpaced: {
     paddingTop: 4,

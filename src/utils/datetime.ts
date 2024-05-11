@@ -8,3 +8,8 @@ export function getCurrentTime() {
 export function formatDateTime(dateTime: string) {
   return DateTime.fromISO(dateTime).toLocaleString(DateTime.DATETIME_MED);
 }
+
+export function getCurrentDateTimeUrlEncoded(): string {
+  const now = DateTime.now().toISO();
+  return encodeURIComponent(now);
+}

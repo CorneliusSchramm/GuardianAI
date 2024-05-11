@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { Alert, StyleSheet, View, AppState, Linking } from 'react-native'
 import { supabase } from '@/frontend/lib/supabase'
-import { Button, Input } from 'react-native-elements'
+import { Input } from 'react-native-elements'
 import { Link, Stack, router } from 'expo-router'
+import { globalStyles } from './theme'
+import { Button } from 'react-native-ui-lib'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -20,13 +22,14 @@ AppState.addEventListener('change', (state) => {
 export default function SetupCallForwarding() {
 
   return (
-    <View>
+    <View style={globalStyles.container}> 
       <Stack.Screen options={{ title: 'Setup Call Forwarding', headerShown: true, headerBackTitleVisible: false }} />
 
-      <Button title='Settings' onPress={() => Linking.openURL('App-Prefs:Phone')}/>
 
-      <Button title='Test Call'/>
-      <Button title='Finish Setup' onPress={() => router.replace("/home")}/>
+      <Button style={globalStyles.mt20} label='Settings' onPress={() => Linking.openURL('App-Prefs:Phone')}/>
+
+      <Button style={globalStyles.mt20} label='Test Call'/>
+      <Button style={globalStyles.mt20} label='Finish Setup' onPress={() => router.replace("/home")}/>
 
     </View>
   )
