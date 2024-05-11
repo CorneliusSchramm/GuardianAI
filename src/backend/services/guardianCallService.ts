@@ -26,20 +26,20 @@ const ANALYSIS_CHUNK_MIN_LENGTH: number = 100;
 const FALLBACK_USER_ID = "0deed605-cb31-44a5-8679-f68527021425";
 
 // Logging
-const output = fs.createWriteStream("./out.log");
-const errorOutput = fs.createWriteStream("./err.log");
-const options = {
-  stdout: output,
-  stderr: errorOutput,
-  ignoreErrors: true,
-  colorMode: true,
-};
-const logger = new Console(options);
+// const output = fs.createWriteStream("./out.log");
+// const errorOutput = fs.createWriteStream("./err.log");
+// const options = {
+//   stdout: output,
+//   stderr: errorOutput,
+//   ignoreErrors: true,
+//   colorMode: true,
+// };
+// const logger = new Console(options);
 
 export async function handleAnsweredCall(callDetails: TelnyxEventPayload) {
-  logger.log(
-    `[${getCurrentTime()}] Call answered. Unknown number. GuardianAI engaged...`
-  );
+  // logger.log(
+  //   `[${getCurrentTime()}] Call answered. Unknown number. GuardianAI engaged...`
+  // );
   // todo: break out into separate extendable payload types
   // find User
   const recipientNumber = callDetails.to;
@@ -90,12 +90,12 @@ export async function handleTranscription(
     .map((d) => d.transcription_chunk)
     .join(" ");
 
-  logger.log(`[${getCurrentTime()}] unanalyzedText...${unanalyzedText}`);
+  // logger.log(`[${getCurrentTime()}] unanalyzedText...${unanalyzedText}`);
   if (
     unanalyzedText.length > ANALYSIS_CHUNK_MIN_LENGTH ||
     unanalyzedText.includes("credit card")
   ) {
-    logger.log(`[${getCurrentTime()}] Analyzing the call...`);
+    // logger.log(`[${getCurrentTime()}] Analyzing the call...`);
     const transcriptionChunkIds = unanalyzedChunks.map(
       (d) => d.transcription_chunk_id
     );
@@ -110,15 +110,15 @@ export async function handleTranscription(
       transcriptionChunkIds,
       savedAnalysisChunk.analyses_chunk_id
     );
-    logger.log(analysisResult);
+    // logger.log(analysisResult);
 
     // todo: save analysisResult to supabase and mark transcription chunks as analyzed
     if (analysisResult.score >= 80) {
       console.log("Scam detected! interention now");
-      logger.log(
-        "\x1b[31m%s\x1b[0m",
-        `[${getCurrentTime()}] Scam detected!!! Warning the user...`
-      );
+      // logger.log(
+      //   "\x1b[31m%s\x1b[0m",
+      //   `[${getCurrentTime()}] Scam detected!!! Warning the user...`
+      // );
       await playWarningSound(callControlId); // await necessary here?
     }
   }
@@ -128,5 +128,5 @@ export async function handleTranscription(
 
 export async function handleHangupCall() {
   // Service logic to handle call hangup
-  logger.log(`[${getCurrentTime()}] Call ended. Stopping transcription...`);
+  // logger.log(`[${getCurrentTime()}] Call ended. Stopping transcription...`);
 }

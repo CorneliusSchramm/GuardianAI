@@ -19,8 +19,8 @@ const fs = require("fs");
 const { Console } = require("console");
 
 // Creating write Stream
-const output = fs.createWriteStream("./out.log");
-const errorOutput = fs.createWriteStream("./err.log");
+// const output = fs.createWriteStream("./out.log");
+// const errorOutput = fs.createWriteStream("./err.log");
 
 let warningColor = "color:red; font-size:20px;";
 
@@ -31,7 +31,7 @@ const options = {
   ignoreErrors: true,
   colorMode: true,
 };
-const logger = new Console(options);
+// const logger = new Console(options);
 
 export async function POST(request: Request) {
   // Log request headers for debugging
@@ -42,9 +42,9 @@ export async function POST(request: Request) {
   console.log(requestData);
 
   if (requestData.data.event_type === "call.answered") {
-    logger.log(
-      `[${getCurrentTime()}] Call answered. Starting transcription...`
-    );
+    // logger.log(
+    //   `[${getCurrentTime()}] Call answered. Starting transcription...`
+    // );
     startTranscription(requestData.data.payload.call_control_id);
 
     return new Response(null, {
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
   }
 
   if (requestData.data.event_type === "call.hangup") {
-    logger.log(`[${getCurrentTime()}] Call ended. Stopping transcription...`);
+    // logger.log(`[${getCurrentTime()}] Call ended. Stopping transcription...`);
 
     return new Response(null, {
       status: 200,
@@ -121,12 +121,10 @@ async function storeTranscription(requestData) {
   console.log(transcription_text);
 
   // store in supabase
-  return await supabase
-    .from("transcriptions")
-    .insert({
-      transcription: transcription_text,
-      call_control_id: call_control_id,
-    });
+  return await supabase.from("transcriptions").insert({
+    transcription: transcription_text,
+    call_control_id: call_control_id,
+  });
 }
 
 async function aggregateTranscription(requestData) {
@@ -157,7 +155,7 @@ async function aggregateTranscription(requestData) {
   ) {
     // transcription_text.includes(".") || transcription_text.includes("?") ||
     console.log("Analyzing the transcription");
-    logger.log(`[${getCurrentTime()}] Analyzing the transcript...`);
+    // logger.log(`[${getCurrentTime()}] Analyzing the transcript...`);
 
     analyzeTranscription(transcription_text, call_control_id);
 
@@ -206,11 +204,11 @@ async function analyzeTranscription(transcription_text, call_control_id) {
     // Extracting and returning the result
     result = JSON.parse(result);
 
-    logger.log({
-      score: result.score,
-      confidence: result.confidence,
-      reasoning: result.reasoning,
-    });
+    // logger.log({
+    //   score: result.score,
+    //   confidence: result.confidence,
+    //   reasoning: result.reasoning,
+    // });
 
     result.transcription = transcription_text;
 
@@ -218,10 +216,10 @@ async function analyzeTranscription(transcription_text, call_control_id) {
 
     if (result.score > 80) {
       console.log("Scam detected!");
-      logger.log(
-        "\x1b[31m%s\x1b[0m",
-        `[${getCurrentTime()}] Scam detected!!! Warning the user...`
-      );
+      // logger.log(
+      //   "\x1b[31m%s\x1b[0m",
+      //   `[${getCurrentTime()}] Scam detected!!! Warning the user...`
+      // );
       playWarningSound(call_control_id);
     }
 
