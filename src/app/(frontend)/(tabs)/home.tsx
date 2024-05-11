@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <View style={globalStyles.container}>
 
-      <Text>Home</Text>
+      <Text>Home is where the domw is</Text>
 
     </View>
   );

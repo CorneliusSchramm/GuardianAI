@@ -48,8 +48,12 @@ export default function Page() {
             // containerStyle={styles.categoryBadge}
           />
         </View>
-        <Text style={styles.transcription} text90BO grey10>{data.reasoning}</Text>
-        <Text style={styles.transcription} text100L grey10>{data.transcription}</Text>
+        <View style={{ paddingVertical: 10 }}>
+          <Text style={{paddingBottom:2}} text70BO blue10>Analysis Reasoning</Text>
+          <Text style={styles.transcription} text90B grey10>{data.reasoning}</Text>
+        </View>
+        <Text text70BO blue10 >Transcript:</Text>
+        <Text style={styles.transcription} text90L grey10>"{data.transcription}"</Text>
       </Card>
     </View>
   );
