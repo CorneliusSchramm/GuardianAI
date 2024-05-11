@@ -12,25 +12,25 @@ const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Using require to access fs module
-const fs = require("fs");
+// const fs = require("fs");
 
 // tail -f -n100 out.log
 // Using require to access console module
-const { Console } = require("console");
+// const { Console } = require("console");
 
 // Creating write Stream
 // const output = fs.createWriteStream("./out.log");
 // const errorOutput = fs.createWriteStream("./err.log");
 
-let warningColor = "color:red; font-size:20px;";
+// let warningColor = "color:red; font-size:20px;";
 
 //
-const options = {
-  stdout: output,
-  stderr: errorOutput,
-  ignoreErrors: true,
-  colorMode: true,
-};
+// const options = {
+//   stdout: output,
+//   stderr: errorOutput,
+//   ignoreErrors: true,
+//   colorMode: true,
+// };
 // const logger = new Console(options);
 
 export async function POST(request: Request) {
