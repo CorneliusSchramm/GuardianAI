@@ -47,7 +47,7 @@ Here is a demo of our app and sign up flow.
 
 For any questions or feedback, please contact us at:
 
-![Screenshot 2024-08-19 at 4.06.14 PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/ef259715-4608-4d5d-9dcb-3f99b9830a60/f4ddbf1c-1771-4c14-a231-df5d506e1817/b448edbd-f02e-4c47-b35a-e23d56bf0463.png)
+![contact](https://github.com/user-attachments/assets/54a62be0-6981-44d5-ace0-0f6a43a82a92)
 
 # Getting Started
 
