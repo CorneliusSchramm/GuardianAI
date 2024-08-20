@@ -10,7 +10,11 @@ Elderly individuals are increasingly targeted by phone scammers, leading to sign
 
 Here is Warren Buffet talking about his concerns regarding AI enabled scamming:
 
-[warren buffet.mp4](https://prod-files-secure.s3.us-west-2.amazonaws.com/ef259715-4608-4d5d-9dcb-3f99b9830a60/893b76f9-468f-46f1-891b-ac33650a00cb/warren_buffet.mp4)
+
+
+https://github.com/user-attachments/assets/e315cd64-5c82-45c3-8c04-9b9b3f919c1b
+
+
 
 # Marketing Materials
 
