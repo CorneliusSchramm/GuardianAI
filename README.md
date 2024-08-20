@@ -4,17 +4,23 @@ Guardian AI is an in-call AI assistant designed to protect the elderly from phon
 
 # Motivation
 Elderly individuals are increasingly targeted by phone scammers, leading to significant financial losses and emotional distress. Guardian AI aimed to mitigate this risk by offering a user-friendly solution that detects potential fraud during phone calls and proactively warns users.
+
 Here is Warren Buffet talking about his concerns regarding AI enabled scamming:
+
 https://github.com/user-attachments/assets/27573039-5b15-4252-aaef-5223aba53d6c
 
 # Marketing Materials
 [Here](https://www.storydoc.com/4d343fe70f8e5a4178ab2339e5508d0d/b2509dda-27f1-46e4-8678-d01ba70392f5/660796d569c9c1f409702a30) is our slide deck with which we tried to raise money before we stopped the project.
+
 [Here](https://www.guardian-ai.io/) is our website.
 
 Here is a proof of concept video. 
 In this working demo, an example scam call is routed through our VOIP network and monitored by our Guardian AI agent. As the call progresses, the console logs shows the the current analysis of the agent. When it becomes clear that the likelihood of a scam is high, GuardianAI intervenes.
+
 https://github.com/user-attachments/assets/0558321b-a052-4fe2-8a65-f090ae35cf92
+
 Here is a demo of our app and sign up flow.
+
 https://github.com/user-attachments/assets/d59daf09-5e02-4ef8-af94-ae9acb1fa741
 
 # Tech Stack
@@ -33,6 +39,7 @@ https://github.com/user-attachments/assets/d59daf09-5e02-4ef8-af94-ae9acb1fa741
 
 # Contact
 For any questions or feedback, please contact us at:
+
 ![contact](https://github.com/user-attachments/assets/54a62be0-6981-44d5-ace0-0f6a43a82a92)
 
 # Getting Started
