@@ -1,7 +1,5 @@
 # Overview
-
 *Guardian AI was initially developed as part of a startup project. Though we ultimately decided to pivot, we figured the code and concept may hold some value to share. It was fun to go through the motions of the initial stages of creating a startup and building a scrappy first proof of concept while learning react native, expo router and supabase.*
-
 Guardian AI is an in-call AI assistant designed to protect the elderly from phone scams. Using LLMs and VOIP call forwarding, Guardian monitors incoming phone calls for signs of scams or non-human voices, alerting the user in real-time and providing a safer calling experience.
 
 # Motivation
@@ -10,10 +8,7 @@ Elderly individuals are increasingly targeted by phone scammers, leading to sign
 
 Here is Warren Buffet talking about his concerns regarding AI enabled scamming:
 
-
-
-https://github.com/user-attachments/assets/e315cd64-5c82-45c3-8c04-9b9b3f919c1b
-
+https://github.com/user-attachments/assets/27573039-5b15-4252-aaef-5223aba53d6c
 
 
 # Marketing Materials
@@ -24,12 +19,11 @@ https://github.com/user-attachments/assets/e315cd64-5c82-45c3-8c04-9b9b3f919c1b
 
 Here is a proof of concept video. 
 In this working demo, an example scam call is routed through our VOIP network and monitored by our Guardian AI agent. As the call progresses, the console logs shows the the current analysis of the agent. When it becomes clear that the likelihood of a scam is high, GuardianAI intervenes.
-
-[yc demo.mp4](https://prod-files-secure.s3.us-west-2.amazonaws.com/ef259715-4608-4d5d-9dcb-3f99b9830a60/a051bd2a-895a-415a-9789-d817d58d2931/yc_demo.mp4)
+https://github.com/user-attachments/assets/0558321b-a052-4fe2-8a65-f090ae35cf92
 
 Here is a demo of our app and sign up flow.
 
-[Sequence 01 from Clideo.mp4](https://prod-files-secure.s3.us-west-2.amazonaws.com/ef259715-4608-4d5d-9dcb-3f99b9830a60/2489abfd-c9b7-4468-b9d0-118e81d50282/Sequence_01_from_Clideo.mp4)
+https://github.com/user-attachments/assets/d59daf09-5e02-4ef8-af94-ae9acb1fa741
 
 # Tech Stack
 
